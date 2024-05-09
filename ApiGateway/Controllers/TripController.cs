@@ -1,33 +1,30 @@
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
-using ReservationService.Events;
-using ReservationService.Models;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Shared.Trip.Dtos;
+using Shared.Trip.Events;
 
 namespace ApiGateway.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ReservationController : ControllerBase
+    public class TripController : ControllerBase
     {
-        readonly IRequestClient<GetReservationEvent> _getReservationsClient;
+        readonly IRequestClient<GetTripEvent> _getTripsClient;
 
-        public ReservationController(IRequestClient<GetReservationEvent> getReservationsClient)
+        public TripController(IRequestClient<GetTripEvent> getTripsClient)
         {
-            _getReservationsClient = getReservationsClient;
+            _getTripsClient = getTripsClient;
         }
 
-        [HttpGet("GetReservations")]
-        //[Route("GetReservations")]
-        public async Task<IEnumerable<ReservationDto>> GetReservations()
+        [HttpGet("GetTrips")]
+        //[Route("GetTrips")]
+        public async Task<IEnumerable<TripDto>> GetTrips()
         {
             // var userGuid = Guid.Parse(userId);
             Console.WriteLine("Rest, jestem");
-            var response = await _getReservationsClient.GetResponse<GetReservationReplyEvent>(new GetReservationEvent() { CorrelationId = Guid.NewGuid(), UserId = "15" });
-            var reservations = response.Message.Reservations;
-            return reservations;
+            var response = await _getTripsClient.GetResponse<GetTripReplyEvent>(new GetTripEvent() { CorrelationId = Guid.NewGuid(), UserId = "15" });
+            var Trips = response.Message.Trips;
+            return Trips;
         }
     }
 }

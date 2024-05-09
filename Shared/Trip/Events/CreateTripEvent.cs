@@ -1,12 +1,12 @@
 
-namespace ReservationService.Events
+namespace Shared.Trip.Events
 {
-    public class CreateReservationEvent
+    public class CreateTripEvent
     {
         public Guid Id { get; set; }
         public Guid CorrelationId  { get; set; }
 
-        public Guid ReservationId { get; set; }
+        public Guid TripId { get; set; }
         public Guid OfferId { get; set; }
 
 

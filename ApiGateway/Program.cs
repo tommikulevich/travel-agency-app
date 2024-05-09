@@ -1,4 +1,3 @@
-using ApiGateway;
 using MassTransit;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,7 +23,7 @@ builder.Services.AddMassTransit(cfg =>
 {
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
-        rabbitCfg.Host("localhost", "/", h =>
+        rabbitCfg.Host("rabbitmq", "/", h =>
         {
             h.Username("guest");
             h.Password("guest");

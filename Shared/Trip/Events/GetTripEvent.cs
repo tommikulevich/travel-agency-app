@@ -1,9 +1,6 @@
-
-using ReservationService.Models;
-
-namespace ReservationService.Events
+namespace Shared.Trip.Events
 {
-    public class GetReservationEvent
+    public class GetTripEvent
     {
         public Guid Id { get; set; }
         public Guid CorrelationId  { get; set; }
