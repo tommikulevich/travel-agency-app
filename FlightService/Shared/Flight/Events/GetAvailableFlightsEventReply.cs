@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using FlightService.Data.Tables;
 
-namespace FlightService.Events
+namespace Shared.Flight.Events
 {
     public class GetAvailableFlightsEventReply
     {

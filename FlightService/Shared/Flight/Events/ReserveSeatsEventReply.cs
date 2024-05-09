@@ -1,5 +1,5 @@
 
-namespace FlightService.Events
+namespace Shared.Flight.Events
 {
     public class ReserveSeatsEventReply
     {

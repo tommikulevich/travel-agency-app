@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using FlightService.Dto;
+using Shared.Flight.Dtos;
 
 namespace FlightService.Data.Tables
 {

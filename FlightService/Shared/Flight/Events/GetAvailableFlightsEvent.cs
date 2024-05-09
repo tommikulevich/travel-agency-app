@@ -1,6 +1,6 @@
 using System;
 
-namespace FlightService.Events
+namespace Shared.Flight.Events
 {
     public class GetAvailableFlightsEvent
     {

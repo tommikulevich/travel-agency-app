@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using FlightService.Repo;
 using FlightService.Data;
 using Flight.Consumers;
-using FlightService.Events;
+using Shared.Flight.Events;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

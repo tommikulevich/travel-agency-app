@@ -1,5 +1,5 @@
 using System;
-using FlightService.Events;
+using Shared.Flight.Events;
 using FlightService.Repo;
 using MassTransit;
 

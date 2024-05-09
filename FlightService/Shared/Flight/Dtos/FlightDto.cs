@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace FlightService.Dto
+namespace Shared.Flight.Dtos
 {
     public class FlightDto
     {
