@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
-using PaymentService.Models;
+// using Shared.PaymentService.Events;
 
-
-namespace PaymentService.Models
+namespace Shared.Payment.Events
 {
-    public class ProcessPaymentFromCustomerEvent : EventModelClass
+    public class ProcessPaymentFromCustomerEvent
     {
         public CardCredentials Card {get; set;}
         public double Price {get; set;}
-
+        public Guid Id {get; set;}
+        public Guid CorrelationID {get; set;}
         public ProcessPaymentFromCustomerEvent(CardCredentials card, double price)
         {
             Card = card;

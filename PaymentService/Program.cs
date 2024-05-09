@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MassTransit;
 using PaymentService.Consumers;
-using PaymentService.Models;
+using Shared.Payment.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
