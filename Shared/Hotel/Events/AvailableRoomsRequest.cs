@@ -1,4 +1,4 @@
-namespace HotelService.Dtos {
+namespace Shared.Hotel.Events {
     public class AvailableRoomsRequest {
         public string DeparturePlace { get; set; }
         public string ArrivalPlace { get; set; }

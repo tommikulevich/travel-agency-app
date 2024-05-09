@@ -1,5 +1,5 @@
 using MassTransit;
-using HotelService.Dtos;
+using Shared.Hotel.Events;
 using HotelService.Data;
 
 namespace HotelService.Consumers {

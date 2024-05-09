@@ -1,4 +1,4 @@
-using HotelService.Dtos;
+using Shared.Hotel.Events;
 using HotelService.Models;
 
 namespace HotelService.Data {

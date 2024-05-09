@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using HotelService.Dtos;
+using Shared.Hotel.Events;
 using MassTransit;
 
 namespace HotelService.Controllers {
