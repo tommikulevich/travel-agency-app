@@ -23,7 +23,7 @@ namespace FlightService.Repo
  public IEnumerable<FlightEntity> GetAvailableFlights(string departurePlace, string arrivalPlace, DateTime departureTime, DateTime arrivalTime, int freeSeats)
         {
             return _context.Flights
-                .Where(r => r.DeparturePlace == departurePlace && r.ArrivalPlace == arrivalPlace && r.DepartureTime >= departureTime)
+                .Where(r => r.DeparturePlace == departurePlace && r.ArrivalPlace == arrivalPlace && r.DepartureTime == departureTime)
                 .Where(r => r.NumOfSeats - _context.FlightSeatEvents.Where(e => e.FlightId == r.Id).Sum(e => e.ReservedSeats) >= freeSeats)  
                 .ToList();
         }
