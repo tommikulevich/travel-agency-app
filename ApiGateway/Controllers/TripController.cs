@@ -9,20 +9,33 @@ namespace ApiGateway.Controllers
     [Route("api/[controller]")]
     public class TripController : ControllerBase
     {
-        readonly IRequestClient<GetTripEvent> _getTripsClient;
+        readonly IRequestClient<GetTripsByUserIdEvent> _getTripsClient;
 
-        public TripController(IRequestClient<GetTripEvent> getTripsClient)
+        readonly IRequestClient<GetAllTripsEvent> _getAllTrips;
+
+        public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, IRequestClient<GetAllTripsEvent> getAllTrips)
         {
             _getTripsClient = getTripsClient;
+            _getAllTrips = getAllTrips;
         }
 
-        [HttpGet("GetTrips")]
+        [HttpGet("GetTripsByUserId")]
         //[Route("GetTrips")]
-        public async Task<IEnumerable<TripDto>> GetTrips()
+        public async Task<IEnumerable<TripDto>> GetTrips(string ClientId)
         {
             // var userGuid = Guid.Parse(userId);
-            Console.WriteLine("Rest, jestem");
-            var response = await _getTripsClient.GetResponse<GetTripReplyEvent>(new GetTripEvent() { CorrelationId = Guid.NewGuid(), UserId = "15" });
+            Console.WriteLine("-> Getting trips reserved by user...");
+            var response = await _getTripsClient.GetResponse<ReplyTripsDtosEvent>(new GetTripsByUserIdEvent() { CorrelationId = Guid.NewGuid(), ClientId = ClientId });
+            var Trips = response.Message.Trips;
+            return Trips;
+        }
+        
+        [HttpGet("GetAllTrips")]
+        public async Task<IEnumerable<TripDto>> GetAllTrips()
+        {
+            // var userGuid = Guid.Parse(userId);
+            Console.WriteLine("-> Getting all trips...");
+            var response = await _getAllTrips.GetResponse<ReplyTripsDtosEvent>(new GetAllTripsEvent() { CorrelationId = Guid.NewGuid()});
             var Trips = response.Message.Trips;
             return Trips;
         }

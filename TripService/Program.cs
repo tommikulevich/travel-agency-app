@@ -2,6 +2,7 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TripService.Data;
 using TripService.Consumers;
+using MassTransit.Futures.Contracts;
 // using TripService.Sagas;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,13 @@ builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMe
 builder.Services.AddScoped<ITripRepo, TripRepo>();
 builder.Services.AddMassTransit(cfg =>
 {
-    cfg.AddConsumer<GetTripConsumer>(context =>
+    cfg.AddConsumer<GetAllTripsConsumer>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
+
+    cfg.AddConsumer<GetTripByUserIdConsumer>(context =>
     {
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();

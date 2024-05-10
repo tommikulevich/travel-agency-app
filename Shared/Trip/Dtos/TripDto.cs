@@ -9,8 +9,11 @@ namespace Shared.Trip.Dtos
         public string FlightId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
+        public string DeparturePlace {get; set;}
         public int NumOfAdults {get; set;}
-        public int NumOfKids {get; set;}
+        public int NumOfKidsTo18 {get; set;}
+        public int NumOfKidsTo10 {get; set;}
+        public int NumOfKidsTo3 {get; set;}
         public DateTime DepartureDate {get; set;}
         public DateTime ReturnDate {get; set;}
         public string TransportType {get; set;}    
