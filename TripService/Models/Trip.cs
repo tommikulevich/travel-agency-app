@@ -14,6 +14,9 @@ namespace TripService.Models
         public string FlightId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
+
+        //TODO Add City
+        //TODO Add Features
         public string DeparturePlace{get; set;}
         public int NumOfAdults {get; set;}
         public int NumOfKidsTo18 {get; set;}
