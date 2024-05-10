@@ -1,13 +1,22 @@
-# Użyj oficjalnego obrazu .NET Core SDK jako bazowego obrazu
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 80
+ENV ASPNETCORE_ENVIRONMENT=Development
+
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+WORKDIR /src/Shared
+COPY ["../Shared", "."]
+WORKDIR /src/PaymentService
+COPY ["PaymentService", "."]
 
-# Skopiuj pliki projektu i zbuduj aplikację
-COPY . .
-RUN dotnet publish -c Release -o out
+RUN dotnet build "PaymentService.csproj" -c Release -o /app/build
 
-# Użyj lżejszego obrazu .NET Core Runtime jako bazowego obrazu do uruchomienia aplikacji
-FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+FROM build AS publish
+RUN dotnet publish "PaymentService.csproj" -c Release -o /app/publish
+
+FROM base AS final
 WORKDIR /app
-COPY --from=build /app/out .
-ENTRYPOINT ["dotnet", "PaymentService.dll"]
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "PaymentService.dll", "--server.urls", "http://+:80"]
