@@ -26,6 +26,11 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
+    cfg.AddConsumer<GetTripsByPreferencesConsumer>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
     // cfg.AddConsumer<SaveTripConsumer>(context =>
     // {
     //     context.UseMessageRetry(r => r.Interval(3, 1000));
