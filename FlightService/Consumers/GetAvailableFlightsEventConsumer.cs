@@ -1,8 +1,9 @@
 using System;
 using Shared.Flight.Events;
+using Shared.Flight.Dtos;
 using FlightService.Repo;
 using MassTransit;
-
+using FlightService.Data.Tables;
 namespace Flight.Consumers
 {
     public class GetAvailableFlightsEventConsumer : IConsumer<GetAvailableFlightsEvent>
@@ -24,7 +25,23 @@ namespace Flight.Consumers
                 context.Message.FreeSeats
             );
 
-            await context.RespondAsync(new GetAvailableFlightsEventReply(flights.ToList()));
+            var flightsDto = new List<Shared.Flight.Dtos.FlightDto>();
+             foreach(var flight in flights)
+            {
+                var flightDto = flight.ToFlightDto();
+               flightsDto.Add(flightDto);
+            }
+
+            await context.RespondAsync(new GetAvailableFlightsEventReply(flightsDto));
         }
     }
 }
+// await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
+//  var clientId = context.Message.ClientId;
+//             var Trips = _TripRepo.GetTripById(clientId);
+//             var TripsDto = new List<TripDto>();
+//             foreach(var Trip in Trips)
+//             {
+//                 var TripDto = Trip.ToTripDto();
+//                 TripsDto.Add(TripDto);
+//             }
