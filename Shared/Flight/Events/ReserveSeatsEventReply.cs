@@ -3,6 +3,7 @@ namespace Shared.Flight.Events
 {
     public class ReserveSeatsEventReply
     {
+        public Guid CorrelationId  { get; set; }
         public Guid FlightId { get; set; }
         public bool Success { get; set; }
         public string Message { get; set; }

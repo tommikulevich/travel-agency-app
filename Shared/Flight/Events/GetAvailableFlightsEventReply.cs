@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
-using FlightService.Data.Tables;
+using Shared.Flight.Dtos;
 
 namespace Shared.Flight.Events
 {
     public class GetAvailableFlightsEventReply
     {
-        public List<FlightEntity> AvailableFlights { get; set; }
+        public Guid CorrelationId  { get; set; }
+        public List<FlightDto> AvailableFlights { get; set; }
 
-        public GetAvailableFlightsEventReply(List<FlightEntity> availableFlights)
+        public GetAvailableFlightsEventReply(List<FlightDto> availableFlights)
         {
             AvailableFlights = availableFlights;
         }

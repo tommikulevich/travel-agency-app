@@ -4,6 +4,7 @@ namespace Shared.Flight.Events
 {
     public class GetAvailableFlightsEvent
     {
+        public Guid CorrelationId  { get; set; }
         public string DeparturePlace { get; set; }
         public string ArrivalPlace { get; set; }
         public DateTime DepartureTime { get; set; }
