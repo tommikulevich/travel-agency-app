@@ -1,19 +1,18 @@
+using Shared.Trip.Dtos;
 
-
-using System.Globalization;
-
-namespace Shared.Trip.Dtos
+namespace Shared.Trip.Events
 {
-    public class TripDto
+    public class ReservationTripEvent
     {
+        public Guid Id { get; set; }
+        public Guid CorrelationId  { get; set; }
         public Guid OfferId { get; set; }
-        public Guid? ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public Guid FlightId { get; set; }
         public Guid HotelId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
-        public string City {get;set;}
-        public string DeparturePlace {get; set;}
+        public string DeparturePlace{get; set;}
         public int NumOfAdults {get; set;}
         public int NumOfKidsTo18 {get; set;}
         public int NumOfKidsTo10 {get; set;}
@@ -22,15 +21,12 @@ namespace Shared.Trip.Dtos
         public DateTime ReturnDate {get; set;}
         public string TransportType {get; set;}    
         public double Price {get; set;}
-        public string MealsType {get; set;}
-        public string RoomType {get; set;} 
+        public string MealsType {get; set;}  
+        public string RoomType {get; set;}    
         public double DiscountPercents {get; set;}
-        public int NumOfNights {get; set;}   
-        public string Features {get;set;} 
-        public string Status {get;set;}   
-
+        public int NumOfNights {get; set;}  
+        public string Status {get;set;}  
 
     }
 
-    
 }

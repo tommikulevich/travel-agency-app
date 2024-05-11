@@ -11,16 +11,16 @@ namespace PaymentService.Consumers
             var @paymentEvent = context.Message;
             var res = await ProcessPaymentFromCard(@paymentEvent.Card);
             if(res)
-                await context.Publish(new ProcessPaymentReplyCustomerEvent(ProcessPaymentReplyCustomerEvent.ACCEPTED, @paymentEvent.CorrelationID));
+                await context.Publish(new ProcessPaymentCustomerReplyEvent(ProcessPaymentCustomerReplyEvent.ACCEPTED, @paymentEvent.CorrelationID));
             else
             {
                 DateTime expiryDate;
                 if (!DateTime.TryParse(paymentEvent.Card.ExpirationDate, out expiryDate))
-                    await context.Publish(new ProcessPaymentReplyCustomerEvent(ProcessPaymentReplyCustomerEvent.INVALID_CARD, @paymentEvent.CorrelationID));
+                    await context.Publish(new ProcessPaymentCustomerReplyEvent(ProcessPaymentCustomerReplyEvent.INVALID_CARD, @paymentEvent.CorrelationID));
                 if(random.Next(100) < 10 || expiryDate < DateTime.Now || @paymentEvent.Card.CVV % 10 > 5)
-                    await context.Publish(new ProcessPaymentReplyCustomerEvent(ProcessPaymentReplyCustomerEvent.INVALID_CARD, @paymentEvent.CorrelationID));
+                    await context.Publish(new ProcessPaymentCustomerReplyEvent(ProcessPaymentCustomerReplyEvent.INVALID_CARD, @paymentEvent.CorrelationID));
                 else
-                    await context.Publish(new ProcessPaymentReplyCustomerEvent(ProcessPaymentReplyCustomerEvent.LIMITS, @paymentEvent.CorrelationID));
+                    await context.Publish(new ProcessPaymentCustomerReplyEvent(ProcessPaymentCustomerReplyEvent.LIMITS, @paymentEvent.CorrelationID));
             }
         }
 

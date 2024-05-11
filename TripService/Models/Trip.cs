@@ -9,11 +9,13 @@ namespace TripService.Models
     {
         [Key] [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public string OfferId { get; set; }
-        public string ClientId { get; set; }
-        public string FlightId { get; set; }
+        public Guid OfferId { get; set; }
+        public Guid? ClientId { get; set; }
+        public Guid FlightId { get; set; }
+        public Guid HotelId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
+        public string City {get;set;}
         public string DeparturePlace{get; set;}
         public int NumOfAdults {get; set;}
         public int NumOfKidsTo18 {get; set;}
@@ -26,50 +28,19 @@ namespace TripService.Models
         public string MealsType {get; set;}    // enum
         public string RoomType {get; set;}    // enum
         public double DiscountPercents {get; set;}
-        public int NumOfNights {get; set;}    
-        public string Status {get;set;}    // enum
-
-        public enum TransportTypeEnum
-        {
-            Airplane,
-            Train,
-            Bus,
-            Car,
-            Ship
-        }
-
-        public enum MealsTypeEnum
-        {
-            Breakfast,
-            HalfBoard,
-            FullBoard,
-            AllInclusive
-        }
-
-        public enum RoomTypeEnum
-        {
-            Single,
-            Double,
-            Twin,
-            Suite
-        }
-
-        public enum StatusEnum
-        {
-            Available,
-            Pending,
-            Reserved
-        }
-
-
+        public int NumOfNights {get; set;} 
+        public string Features  {get;set;}
+        public string Status {get;set;}    
 
         public void SetFields(TripDto dto)
         {
             this.OfferId = dto.OfferId;
             this.ClientId = dto.ClientId;
             this.FlightId = dto.FlightId;
+            this.HotelId = dto.HotelId;
             this.Name = dto.Name;
             this.Country = dto.Country;
+            this.City = dto.City;
             this.DeparturePlace = dto.DeparturePlace;
             this.NumOfAdults = dto.NumOfAdults;
             this.NumOfKidsTo18 = dto.NumOfKidsTo18;
@@ -82,7 +53,8 @@ namespace TripService.Models
             this.MealsType = dto.MealsType;
             this.RoomType = dto.RoomType;
             this.DiscountPercents = dto.DiscountPercents;
-            this.NumOfNights = dto.NumOfNights;   
+            this.NumOfNights = dto.NumOfNights;  
+            this.Features = dto.Features; 
             this.Status = dto.Status; 
         }
 
@@ -93,8 +65,10 @@ namespace TripService.Models
                 OfferId = this.OfferId,
                 ClientId = this.ClientId,
                 FlightId = this.FlightId,
+                HotelId = this.HotelId,
                 Name = this.Name,
                 Country = this.Country,
+                City = this.City,
                 DeparturePlace = this.DeparturePlace,
                 NumOfAdults = this.NumOfAdults,
                 NumOfKidsTo18 = this.NumOfKidsTo18,
@@ -107,7 +81,8 @@ namespace TripService.Models
                 MealsType = this.MealsType,
                 RoomType = this.RoomType,
                 DiscountPercents = this.DiscountPercents,
-                NumOfNights = this.NumOfNights,   
+                NumOfNights = this.NumOfNights, 
+                Features = this.Features,  
                 Status = this.Status, 
             };
         }

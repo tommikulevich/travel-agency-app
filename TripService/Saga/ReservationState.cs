@@ -1,13 +1,16 @@
+using MassTransit;
 
-
-using System.Globalization;
-
-namespace Shared.Trip.Dtos
+namespace TripService.Saga
 {
-    public class TripDto
+    public class ReservationState : SagaStateMachineInstance
     {
+        public int CurrentState { get; set; }
+        public Guid CorrelationId { get; set; }
+
+        public Guid? ReservationTimeoutEventId { get; set; }
+
         public Guid OfferId { get; set; }
-        public Guid? ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public Guid FlightId { get; set; }
         public Guid HotelId { get; set; }
         public string Name {get; set;}
@@ -27,10 +30,10 @@ namespace Shared.Trip.Dtos
         public double DiscountPercents {get; set;}
         public int NumOfNights {get; set;}   
         public string Features {get;set;} 
-        public string Status {get;set;}   
+        public string Status {get;set;}  
 
-
+        public bool TravelReservationSuccesful { get; set; }
+        public bool HotelReservationSuccesful { get; set; }
+        public bool PaymentSuccesful { get; set; }
     }
-
-    
 }

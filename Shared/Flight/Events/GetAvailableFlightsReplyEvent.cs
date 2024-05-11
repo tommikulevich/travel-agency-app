@@ -4,12 +4,12 @@ using Shared.Flight.Dtos;
 
 namespace Shared.Flight.Events
 {
-    public class GetAvailableFlightsEventReply
+    public class GetAvailableFlightsReplyEvent
     {
         public Guid CorrelationId  { get; set; }
         public List<FlightDto> AvailableFlights { get; set; }
 
-        public GetAvailableFlightsEventReply(List<FlightDto> availableFlights)
+        public GetAvailableFlightsReplyEvent(List<FlightDto> availableFlights)
         {
             AvailableFlights = availableFlights;
         }
