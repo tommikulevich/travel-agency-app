@@ -10,8 +10,9 @@ namespace TripService.Models
         [Key] [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
         public Guid OfferId { get; set; }
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
         public Guid FlightId { get; set; }
+        public Guid HotelId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
         public string City {get;set;}
@@ -29,47 +30,14 @@ namespace TripService.Models
         public double DiscountPercents {get; set;}
         public int NumOfNights {get; set;} 
         public string Features  {get;set;}
-        public string Status {get;set;}    // enum
-
-        public enum TransportTypeEnum
-        {
-            Airplane,
-            Train,
-            Bus,
-            Car,
-            Ship
-        }
-
-        public enum MealsTypeEnum
-        {
-            Breakfast,
-            HalfBoard,
-            FullBoard,
-            AllInclusive
-        }
-
-        public enum RoomTypeEnum
-        {
-            Single,
-            Double,
-            Twin,
-            Suite
-        }
-
-        public enum StatusEnum
-        {
-            Available,
-            Pending,
-            Reserved
-        }
-
-
+        public string Status {get;set;}    
 
         public void SetFields(TripDto dto)
         {
             this.OfferId = dto.OfferId;
             this.ClientId = dto.ClientId;
             this.FlightId = dto.FlightId;
+            this.HotelId = dto.HotelId;
             this.Name = dto.Name;
             this.Country = dto.Country;
             this.City = dto.City;
@@ -97,6 +65,7 @@ namespace TripService.Models
                 OfferId = this.OfferId,
                 ClientId = this.ClientId,
                 FlightId = this.FlightId,
+                HotelId = this.HotelId,
                 Name = this.Name,
                 Country = this.Country,
                 City = this.City,

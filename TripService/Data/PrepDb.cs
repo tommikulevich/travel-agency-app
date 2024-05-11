@@ -20,8 +20,8 @@ namespace TripService.Data
 
                 context.Trips.AddRange(
                     new Trip() {OfferId = Guid.Parse("7d4653b2-8a2b-4d7a-b8ff-6e8e11a5f485"),
-                    ClientId = Guid.Parse("6e98f972-df4d-4ecb-bc3a-9f7a1d05ac56"),
                     FlightId = Guid.Parse("3c3c81e6-46f7-4959-81e0-cb37d0f3dce2"),
+                    HotelId = Guid.Parse("d9c48b4f-7e8b-4e8d-9b77-68b8e501d8f7"),
                     Name = "Hurgada",
                     Country = "Egypt",
                     City = "Hurgada",
@@ -44,6 +44,7 @@ namespace TripService.Data
                     new Trip() {OfferId = Guid.Parse("be95e30b-9eaf-4bb5-92d4-d42a23d1a672"),
                     ClientId = Guid.Parse("8fb58b36-9b35-4e6a-8108-f8e6f11bc8d3"),
                     FlightId = Guid.Parse("f1bdaedb-32b6-4656-986a-946f238f14ef"),
+                    HotelId = Guid.Parse("f832c2e7-9a9e-491a-82de-5067689cf019"),
                     Name = "Madrid",
                     Country = "Spain",
                     City = "Madrid",
@@ -66,6 +67,7 @@ namespace TripService.Data
                     new Trip() {OfferId = Guid.Parse("4a6f6368-dab8-4d03-8ec7-7a2764c1d15c"),
                     ClientId = Guid.Parse("ebbd73fb-f202-45aa-a9a4-426ed09f2674"),
                     FlightId = Guid.Parse("ad0e5ae4-dfb9-4c8a-8b7d-af65d692227e"),
+                    HotelId = Guid.Parse("2d0032cf-6c6a-4b7b-8424-7e846d4fe5e5"),
                     Name = "Rome",
                     Country = "Italy",
                     City = "Rome",
