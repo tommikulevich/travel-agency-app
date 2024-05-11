@@ -51,7 +51,8 @@ namespace TripService.Data
 
         public List<Trip> GetTripById(string id)
         {
-            return _context.Trips.Where(p => p.ClientId == id).ToList();
+            Guid guid = Guid.Parse(id);
+            return _context.Trips.Where(p => p.ClientId == guid).ToList();
         }
 
         public void SaveTrip(Trip Trip)
