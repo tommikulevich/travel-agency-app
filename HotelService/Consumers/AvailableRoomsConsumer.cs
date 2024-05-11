@@ -12,7 +12,7 @@ namespace HotelService.Consumers {
 
         public async Task Consume(ConsumeContext<AvailableRoomsRequest> context) {
             var hotels = _hotelRepo.GetAvailableHotels(context.Message);
-            await context.RespondAsync(hotels);
+            await context.RespondAsync(new { Hotels = hotels });
         }
     }
 }
