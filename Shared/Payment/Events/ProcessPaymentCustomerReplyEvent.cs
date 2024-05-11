@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Shared.Payment.Events
 {
-    public class ProcessPaymentReplyCustomerEvent
+    public class ProcessPaymentCustomerReplyEvent
     {
         public const string ACCEPTED = "ACCEPTED";
         public const string INVALID_CARD = "INVALID CARD";
@@ -11,14 +11,14 @@ namespace Shared.Payment.Events
 
         public string Response {get; set;}
         public Guid Id {get; set;}
-        public Guid CorrelationID {get; set;}
+        public Guid CorrelationId {get; set;}
 
-        public ProcessPaymentReplyCustomerEvent(string response, Guid correlationId) : base()
+        public ProcessPaymentCustomerReplyEvent(string response, Guid correlationId) : base()
         {
             Response = response;
-            CorrelationID = correlationId;
+            CorrelationId = correlationId;
         }
 
-        public ProcessPaymentReplyCustomerEvent() {}
+        public ProcessPaymentCustomerReplyEvent() {}
     }
 }

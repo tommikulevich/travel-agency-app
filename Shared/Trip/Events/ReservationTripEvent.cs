@@ -6,9 +6,10 @@ namespace Shared.Trip.Events
     {
         public Guid Id { get; set; }
         public Guid CorrelationId  { get; set; }
-        public string OfferId { get; set; }
-        public string ClientId { get; set; }
-        public string FlightId { get; set; }
+        public Guid OfferId { get; set; }
+        public Guid ClientId { get; set; }
+        public Guid FlightId { get; set; }
+        public Guid HotelId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
         public string DeparturePlace{get; set;}
@@ -23,7 +24,8 @@ namespace Shared.Trip.Events
         public string MealsType {get; set;}  
         public string RoomType {get; set;}    
         public double DiscountPercents {get; set;}
-        public int NumOfNights {get; set;}   
+        public int NumOfNights {get; set;}  
+        public string Status {get;set;}  
 
     }
 

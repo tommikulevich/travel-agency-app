@@ -5,7 +5,7 @@ namespace Shared.Hotel.Events {
         public Guid Id  { get; set; }
         public Guid CorrelationId  { get; set; }
         // public Guid RoomId { get; set; }
-        public string ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
         public string City {get; set;}
