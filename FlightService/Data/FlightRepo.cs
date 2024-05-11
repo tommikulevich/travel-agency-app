@@ -46,7 +46,6 @@ namespace FlightService.Repo
             _context.FlightSeatEvents.Add(new FlightSeatEvent
             {
                 FlightId = Id, 
-                EventTime = DateTime.UtcNow,
                 ReservedSeats = seats
             });
 
