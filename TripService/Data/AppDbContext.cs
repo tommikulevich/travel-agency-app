@@ -10,6 +10,6 @@ namespace TripService.Data
             
         }
 
-        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Trip> Trip { get; set; }
     }
 }

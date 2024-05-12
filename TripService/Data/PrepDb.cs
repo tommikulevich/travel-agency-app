@@ -14,11 +14,11 @@ namespace TripService.Data
 
         private static void SeedData(AppDbContext context)
         {
-            if(!context.Trips.Any())
+            if(!context.Trip.Any())
             {
                 Console.WriteLine("--> Seeding data");
 
-                context.Trips.AddRange(
+                context.Trip.AddRange(
                     new Trip() {
                     FlightId = Guid.Parse("3c3c81e6-46f7-4959-81e0-cb37d0f3dce2"),
                     HotelId = Guid.Parse("d9c48b4f-7e8b-4e8d-9b77-68b8e501d8f7"),

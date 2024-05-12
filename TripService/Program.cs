@@ -11,7 +11,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
+// builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
 builder.Services.AddScoped<ITripRepo, TripRepo>();
 builder.Services.AddMassTransit(cfg =>
 {
@@ -71,7 +73,7 @@ if (app.Environment.IsDevelopment())
 
 
 // init database
-PrepDb.PrepPopulation(app);
+//PrepDb.PrepPopulation(app);
 
 
 

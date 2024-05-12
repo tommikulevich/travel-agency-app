@@ -16,12 +16,12 @@ namespace TripService.Data
             {
                 throw new ArgumentNullException(nameof(offer));
             }
-            _context.Trips.Add(offer);
+            _context.Trip.Add(offer);
         }
 
         public IEnumerable<Trip> GetAllTrips()
         {
-            return _context.Trips.ToList();
+            return _context.Trip.ToList();
         }
 
         public IEnumerable<Trip> GetTripsByPreferences(string Destination, DateTime DepartureDate, 
@@ -29,7 +29,7 @@ namespace TripService.Data
                                                                         int NumOfKidsTo18, int NumOfKidsTo10, 
                                                                         int NumOfKidsTo3)
         {
-            IQueryable<Trip> query = _context.Trips;
+            IQueryable<Trip> query = _context.Trip;
 
             query = query.Where(t => t.Country.ToLower().Contains(Destination.ToLower()));
 
@@ -52,18 +52,18 @@ namespace TripService.Data
         public List<Trip> GetTripById(string id)
         {
             Guid guid = Guid.Parse(id);
-            return _context.Trips.Where(p => p.ClientId == guid).ToList();
+            return _context.Trip.Where(p => p.ClientId == guid).ToList();
         }
 
         public void SaveTrip(Trip Trip)
         {
-            _context.Trips.Add(Trip);
+            _context.Trip.Add(Trip);
             _context.SaveChanges();
         }
 
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus)
         {
-            var trip = _context.Trips.FirstOrDefault(t => t.Id == TripId);
+            var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
             trip.Status = newReservationStatus;
             _context.SaveChanges();
         }
