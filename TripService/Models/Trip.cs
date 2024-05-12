@@ -9,7 +9,6 @@ namespace TripService.Models
     {
         [Key] [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public Guid Id { get; set; }
-        public Guid OfferId { get; set; }
         public Guid? ClientId { get; set; }
         public Guid FlightId { get; set; }
         public Guid HotelId { get; set; }
@@ -17,6 +16,7 @@ namespace TripService.Models
         public string Country {get; set;}
         public string City {get;set;}
         public string DeparturePlace{get; set;}
+        public string ArrivalPlace {get; set;}
         public int NumOfAdults {get; set;}
         public int NumOfKidsTo18 {get; set;}
         public int NumOfKidsTo10 {get; set;}
@@ -34,7 +34,6 @@ namespace TripService.Models
 
         public void SetFields(TripDto dto)
         {
-            this.OfferId = dto.OfferId;
             this.ClientId = dto.ClientId;
             this.FlightId = dto.FlightId;
             this.HotelId = dto.HotelId;
@@ -42,6 +41,7 @@ namespace TripService.Models
             this.Country = dto.Country;
             this.City = dto.City;
             this.DeparturePlace = dto.DeparturePlace;
+            this.ArrivalPlace = dto.ArrivalPlace;
             this.NumOfAdults = dto.NumOfAdults;
             this.NumOfKidsTo18 = dto.NumOfKidsTo18;
             this.NumOfKidsTo10 = dto.NumOfKidsTo10;
@@ -62,7 +62,6 @@ namespace TripService.Models
         {
             return new TripDto()
             {
-                OfferId = this.OfferId,
                 ClientId = this.ClientId,
                 FlightId = this.FlightId,
                 HotelId = this.HotelId,
@@ -70,6 +69,7 @@ namespace TripService.Models
                 Country = this.Country,
                 City = this.City,
                 DeparturePlace = this.DeparturePlace,
+                ArrivalPlace = this.ArrivalPlace,
                 NumOfAdults = this.NumOfAdults,
                 NumOfKidsTo18 = this.NumOfKidsTo18,
                 NumOfKidsTo10 = this.NumOfKidsTo10,
