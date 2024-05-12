@@ -5,8 +5,6 @@ using HotelService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-
 builder.Services.AddMassTransit(x => {
     x.AddConsumer<AvailableRoomsConsumer>();
     x.UsingRabbitMq((context, cfg) => {

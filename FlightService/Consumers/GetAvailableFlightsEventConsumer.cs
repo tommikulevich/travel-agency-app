@@ -32,7 +32,7 @@ namespace Flight.Consumers
                flightsDto.Add(flightDto);
             }
 
-            await context.RespondAsync(new GetAvailableFlightsEventReply(flightsDto));
+            await context.RespondAsync(new GetAvailableFlightsReplyEvent(flightsDto));
         }
     }
 }
