@@ -40,7 +40,6 @@ namespace TripService.Saga
                 s.Received = r => r.CorrelateById(context => context.Message.CorrelationId);
             });
 
-            // Initial state (Ask for reservation, collect data from event)
             Initially(
                 // Init Saga State Variables read from Event
                 When(ReservationTripEvent).Then(async context => {
@@ -88,7 +87,13 @@ namespace TripService.Saga
                     ReturnDate = context.Saga.ReturnDate,
                     RoomType = context.Saga.RoomType,
                     NumOfNights = context.Saga.NumOfNights
-                })) // change status
+                })) // Respond to api gateway
+                .RespondAsync(context => context.Init<ReservationTripReplyEvent>(
+                        new ReservationTripReplyEvent()
+                        {
+                            Id = context.Saga.CorrelationId,
+                            CorrelationId = context.Saga.CorrelationId
+                        }))
                 .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
                     CorrelationId = context.Saga.CorrelationId,
                     OfferId = context.Saga.OfferId,
