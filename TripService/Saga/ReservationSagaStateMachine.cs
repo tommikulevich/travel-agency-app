@@ -40,7 +40,6 @@ namespace TripService.Saga
                 s.Received = r => r.CorrelateById(context => context.Message.CorrelationId);
             });
 
-            // Initial state (Ask for reservation, collect data from event)
             Initially(
                 // Init Saga State Variables read from Event
                 When(ReservationTripEvent).Then(async context => {
@@ -88,7 +87,18 @@ namespace TripService.Saga
                     ReturnDate = context.Saga.ReturnDate,
                     RoomType = context.Saga.RoomType,
                     NumOfNights = context.Saga.NumOfNights
-                })) // change status
+                })) // Respond to api gateway
+                .RespondAsync(context => context.Init<ReservationTripReplyEvent>(
+                        new ReservationTripReplyEvent()
+                        {
+                            Id = context.Saga.CorrelationId,
+                            CorrelationId = context.Saga.CorrelationId
+                        }))
+                .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                    CorrelationId = context.Saga.CorrelationId,
+                    OfferId = context.Saga.OfferId,
+                    Status = "Pending"
+                }))
                 // Check if flight reserve is needed
                 .IfElse(context => context.Saga.TransportType == "Airplane",
                         context => context
@@ -189,7 +199,12 @@ namespace TripService.Saga
                             {
                                 CorrelationId = context.Saga.CorrelationId
                             }))
-                        // .PublishAsync() Change status reservation
+                        //Change status reservation
+                        .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                            CorrelationId = context.Saga.CorrelationId,
+                            OfferId = context.Saga.OfferId,
+                            Status = "Waiting for payment"
+                        }))
                         .TransitionTo(HotelAndFlightReserved),
                     context => context
                         .TransitionTo(ReservationFailed)));
@@ -223,6 +238,11 @@ namespace TripService.Saga
                     {
                         Console.WriteLine("-> SAGA STATE: Successfully booked");
                     })
+                    .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                    CorrelationId = context.Saga.CorrelationId,
+                    OfferId = context.Saga.OfferId,
+                    Status = "Reserved"
+                }))
                     // Event change status reservation
                     );
                 WhenEnter(ReservationFailed, binder => binder
@@ -230,7 +250,11 @@ namespace TripService.Saga
                     {
                         Console.WriteLine("-> SAGA STATE: Reservation Failed");
                     })
-                    // Event change status reservation
+                    .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                    CorrelationId = context.Saga.CorrelationId,
+                    OfferId = context.Saga.OfferId,
+                    Status = "Awailable"
+                }))
                     // TODO Unbook Seats - same event with minus
                     // TODO Unbook Room
                     );

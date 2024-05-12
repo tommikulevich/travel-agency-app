@@ -14,5 +14,6 @@ namespace TripService.Data
         List<Trip> GetTripById(string id);
         void CreateTrip(Trip Trip);
         void SaveTrip(Trip Trip);
+        public void ChangeReservationStatus(Guid TripId, string newReservationStatus);
     }
 }
