@@ -16,16 +16,14 @@ namespace TripService.Consumers
         {
             var Trips = _TripRepo.GetAllTrips();
             var TripsDto = new List<TripDto>();
-            int i = 0;
             foreach(var Trip in Trips)
             {
                 var TripDto = Trip.ToTripDto();
                 TripsDto.Add(TripDto);
-                i++;
             }
             await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
             // Fetch reservations from the database
-            Console.WriteLine("Jestem all", i);
+            Console.WriteLine("Jestem all");
 
         }
     }
