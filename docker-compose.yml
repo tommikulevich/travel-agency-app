@@ -2,13 +2,12 @@ version: '3.8'
 
 services:
 
-  rabbitmq: # broker service from default image
-  # https://hub.docker.com/_/rabbitmq
-    image: rabbitmq:latest # management for web interface on port 15672
-    hostname: 'rabbitmq' # host name, otherwise it's random alphanum string
-    container_name: 'rabbitmq' # container name
-    ports: # port forwarding
-        - 5672:5672 # normal communication
+  rabbitmq: # broker service from default image https://hub.docker.com/_/rabbitmq
+    image: rabbitmq:latest 
+    hostname: 'rabbitmq'
+    container_name: 'rabbitmq' 
+    ports: 
+        - 5672:5672   # normal communication
         - 15672:15672 # web interface
     networks:
       - backend # connected networks
@@ -39,17 +38,41 @@ services:
     networks:
       - backend # connected networks
 
-networks: # defining networks
+  flightservice:
+    build:
+      context: .
+      dockerfile: ./FlightService/Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    networks:
+      - backend # connected networks
+
+  hotelservice:
+    build:
+      context: .
+      dockerfile: ./HotelService/Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    networks:
+      - backend # connected networks
+
+  paymentservice:
+    build:
+      context: .
+      dockerfile: ./PaymentService/Dockerfile
+    depends_on:
+      - rabbitmq
+    environment:
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    networks:
+      - backend # connected networks
+
+networks:
   backend: {} # network for the rest of communication
-
-  # rabbitmq: # broker service from default image
-  # # https://hub.docker.com/_/rabbitmq
-  #   image: heidiks/rabbitmq-delayed-message-exchange:latest # management for web interface on port 15672
-  #   hostname: 'localhost' # host name, otherwise it's random alphanum string
-  #   container_name: 'rabbitmq' # container name
-  #   ports: # port forwarding
-  #       - 5672:5672 # normal communication
-  #       - 15672:15672 # web interface
-
-
-
