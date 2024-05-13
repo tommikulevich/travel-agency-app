@@ -9,7 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
- builder.Services.AddDbContext<FlightContext>(opt=>opt.UseInMemoryDatabase("InMem"));
+builder.Services.AddDbContext<FlightContext>(options =>
+    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
 builder.Services.AddScoped<IFlightRepo, FlightRepo>();
 builder.Services.AddMassTransit(cfg =>
 {

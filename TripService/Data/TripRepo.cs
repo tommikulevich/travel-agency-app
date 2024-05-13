@@ -31,11 +31,12 @@ namespace TripService.Data
         {
             IQueryable<Trip> query = _context.Trip;
 
-            query = query.Where(t => t.Country.ToLower().Contains(Destination.ToLower()));
+            query = query.Where(t => t.Country == Destination);
 
-            query = query.Where(t => t.DepartureDate.Date == DepartureDate.Date);
+            DateTime utcDepartureDate = DepartureDate.ToUniversalTime();
+            query = query.Where(t => t.DepartureDate.Date == utcDepartureDate.Date);
 
-            query = query.Where(t => t.DeparturePlace.ToLower().Contains(DeparturePlace.ToLower()));
+            query = query.Where(t => t.DeparturePlace == DeparturePlace);
 
             query = query.Where(t => t.NumOfAdults == NumOfAdults);
 

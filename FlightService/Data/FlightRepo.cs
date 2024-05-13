@@ -24,7 +24,7 @@ namespace FlightService.Repo
         {
             return _context.Flights
                 .Where(r => r.DeparturePlace == departurePlace && r.ArrivalPlace == arrivalPlace && r.DepartureTime.Date == departureTime.Date)
-                .Where(r => r.NumOfSeats - _context.FlightSeatEvents.Where(e => e.FlightId == r.Id).Sum(e => e.ReservedSeats) >= freeSeats)  
+                .Where(r => r.NumOfSeats - _context.FlightEvent.Where(e => e.FlightId == r.Id).Sum(e => e.ReservedSeats) >= freeSeats)  
                 .ToList();
         }
 
@@ -37,13 +37,13 @@ namespace FlightService.Repo
                 throw new Exception("Flight not found");
             }
 
-            var currentFreeSeats = flight.NumOfSeats - _context.FlightSeatEvents.Where(e => e.FlightId == Id).Sum(e => e.ReservedSeats); 
+            var currentFreeSeats = flight.NumOfSeats - _context.FlightEvent.Where(e => e.FlightId == Id).Sum(e => e.ReservedSeats); 
             if (currentFreeSeats < seats)
             {
                 throw new Exception("Not enough free seats");
             }
 
-            _context.FlightSeatEvents.Add(new FlightSeatEvent
+            _context.FlightEvent.Add(new FlightSeatEvent
             {
                 FlightId = Id, 
                 ReservedSeats = seats

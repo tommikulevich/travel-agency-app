@@ -8,25 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddMassTransit(x => {
     x.AddConsumer<AvailableRoomsConsumer>();
     x.UsingRabbitMq((context, cfg) => {
-        cfg.Host("localhost", "/", h => {
+        cfg.Host("rabbitmq", "/", h => {
             h.Username("guest");
             h.Password("guest");
         });
-        cfg.ReceiveEndpoint("hotel-queue", e => {
-            e.ConfigureConsumer<AvailableRoomsConsumer>(context);
-        });
+        // cfg.ReceiveEndpoint("hotel-queue", e => {
+        //     e.ConfigureConsumer<AvailableRoomsConsumer>(context);
+        // });
     });
 });
 
-// builder.Services.AddDbContext<HotelDbContext>(options =>
-//     options.UseSqlite(builder.Configuration.GetConnectionString("HotelDatabase")));
-builder.Services.AddDbContext<HotelDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
+builder.Services.AddDbContext<HotelDbContext>(options =>
+    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
 builder.Services.AddScoped<IHotelRepo, HotelRepo>();
 
 var app = builder.Build();
-
-app.UseRouting();
-
-app.MapControllers();
 
 app.Run();

@@ -10,7 +10,7 @@ namespace FlightService.Data
         public FlightContext() {}
 
         public DbSet<FlightEntity> Flights {get;set;}
-        public DbSet<FlightSeatEvent> FlightSeatEvents { get; set; }
+        public DbSet<FlightSeatEvent> FlightEvent { get; set; }
 
         // protected override void OnModelCreating(ModelBuilder modelBuilder)
         // {

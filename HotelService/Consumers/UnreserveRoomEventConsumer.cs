@@ -13,7 +13,7 @@ namespace HotelService.Consumers {
         public async Task Consume(ConsumeContext<UnreserveRoomEvent> context) {
             Console.WriteLine($"Received unreservation request for Client ID: {context.Message.ClientId}");
 
-            var roomEvents = _context.RoomEvents.Where(
+            var roomEvents = _context.RoomEvent.Where(
                 re => re.StartDate == context.Message.ArrivalDate &&
                       re.EndDate == context.Message.ReturnDate &&
                       re.Status == "Reserved").ToList();
@@ -28,7 +28,7 @@ namespace HotelService.Consumers {
                 return;
             }
             
-            _context.RoomEvents.RemoveRange(roomEvents);
+            _context.RoomEvent.RemoveRange(roomEvents);
 
             try {
                 _context.SaveChanges();
