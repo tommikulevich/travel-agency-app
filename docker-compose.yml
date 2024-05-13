@@ -76,6 +76,18 @@ services:
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
+  
+  frontend:
+    build:
+      context: .
+      dockerfile: ./rsww-front/Dockerfile
+    depends_on:
+      - apigateway
+    ports:
+      - 3000:3000
+    networks:
+      - backend
 
 networks:
+  frontend: {}
   backend: {} # network for the rest of communication

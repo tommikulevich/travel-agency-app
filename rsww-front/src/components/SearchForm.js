@@ -21,7 +21,7 @@ function SearchForm() {
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const result = await axios.get('api/Trip/GetTripsByPreferences', {
+    const result = await axios.get('http://localhost:8080/api/Trip/GetTripsByPreferences', {
       params: {
         Destination: destination,
         DepartureDate: departureDate,
