@@ -34,6 +34,7 @@ namespace TripService.Models
 
         public void SetFields(TripDto dto)
         {
+            this.Id = dto.Id;
             this.ClientId = dto.ClientId;
             this.FlightId = dto.FlightId;
             this.HotelId = dto.HotelId;
@@ -62,6 +63,7 @@ namespace TripService.Models
         {
             return new TripDto()
             {
+                Id = this.Id,
                 ClientId = this.ClientId,
                 FlightId = this.FlightId,
                 HotelId = this.HotelId,

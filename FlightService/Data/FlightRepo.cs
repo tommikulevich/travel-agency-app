@@ -22,7 +22,7 @@ namespace FlightService.Repo
 
  public IEnumerable<FlightEntity> GetAvailableFlights(string departurePlace, string arrivalPlace, DateTime departureTime, DateTime arrivalTime, int freeSeats)
         {
-            return _context.Flights
+            return _context.Flight
                 .Where(r => r.DeparturePlace == departurePlace && r.ArrivalPlace == arrivalPlace && r.DepartureTime.Date == departureTime.Date)
                 .Where(r => r.NumOfSeats - _context.FlightEvent.Where(e => e.FlightId == r.Id).Sum(e => e.ReservedSeats) >= freeSeats)  
                 .ToList();
@@ -31,7 +31,7 @@ namespace FlightService.Repo
 
        public void ReserveSeats(Guid Id, int seats)
         {
-            var flight = _context.Flights.Find(Id);
+            var flight = _context.Flight.Find(Id);
             if (flight == null)
             {
                 throw new Exception("Flight not found");
@@ -53,7 +53,7 @@ namespace FlightService.Repo
         }
         public IEnumerable<FlightEntity> GetAllFlights()
         {
-             return _context.Flights
+             return _context.Flight
                 .Where(r => r.DeparturePlace!=null)
                 .Select(r => r)
                 .ToList();

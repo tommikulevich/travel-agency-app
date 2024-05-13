@@ -4,7 +4,7 @@ namespace TripService.Data
 {
     public interface ITripRepo
     {
-        bool SaveChanges();
+        // bool SaveChanges();
 
         IEnumerable<Trip> GetAllTrips();
         IEnumerable<Trip> GetTripsByPreferences(string Destination, DateTime DepartureDate, 

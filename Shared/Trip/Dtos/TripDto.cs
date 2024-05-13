@@ -6,6 +6,7 @@ namespace Shared.Trip.Dtos
 {
     public class TripDto
     {
+        public Guid Id {get; set;}
         public Guid? ClientId { get; set; }
         public Guid FlightId { get; set; }
         public Guid HotelId { get; set; }

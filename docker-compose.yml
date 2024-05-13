@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   rabbitmq: # broker service from default image https://hub.docker.com/_/rabbitmq
-    image: rabbitmq:latest 
+    image: heidiks/rabbitmq-delayed-message-exchange:latest 
     hostname: 'rabbitmq'
     container_name: 'rabbitmq' 
     ports: 

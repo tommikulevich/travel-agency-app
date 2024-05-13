@@ -45,6 +45,7 @@ namespace ApiGateway.Controllers
             {
                 Id = reservationId,
                 CorrelationId = reservationId,
+                OfferId = reservationDto.OfferId,
                 ClientId = reservationDto.ClientId,
                 FlightId = reservationDto.FlightId,
                 HotelId = reservationDto.HotelId,

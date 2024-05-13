@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using TripService.Data;
 using TripService.Consumers;
 using MassTransit.Futures.Contracts;
+using TripService.Saga;
 // using TripService.Sagas;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -48,8 +49,8 @@ builder.Services.AddMassTransit(cfg =>
     //     context.UseMessageRetry(r => r.Interval(3, 1000));
     //     context.UseInMemoryOutbox();
     // });
-    // cfg.AddSagaStateMachine<TripSagaStateMachine, TripSagaState>().InMemoryRepository();
-    // cfg.AddDelayedMessageScheduler();
+    cfg.AddSagaStateMachine<ReservationStateMachine, ReservationState>().InMemoryRepository();
+    cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
         rabbitCfg.Host("rabbitmq", "/", h =>
@@ -80,7 +81,7 @@ if (app.Environment.IsDevelopment())
 app.Run();
 
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
+// {
+//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+// }

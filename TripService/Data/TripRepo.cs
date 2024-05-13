@@ -64,14 +64,15 @@ namespace TripService.Data
 
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus)
         {
-            var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
-            trip.Status = newReservationStatus;
+            // var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
+            // trip.Status = newReservationStatus;
+            _context.Trip.FirstOrDefault(t => t.Id == TripId).Status = newReservationStatus;
             _context.SaveChanges();
         }
 
-        public bool SaveChanges()
-        {
-            return (_context.SaveChanges() >= 0);
-        }
+        // public bool SaveChanges()
+        // {
+        //     return (_context.SaveChanges() >= 0);
+        // }
     }
 }

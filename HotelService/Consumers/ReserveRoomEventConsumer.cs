@@ -5,64 +5,64 @@ using Shared.Hotel.Events;
 
 namespace HotelService.Consumers {
     public class ReserveRoomEventConsumer : IConsumer<ReserveRoomEvent> {
-        private readonly IHotelRepo _hotelRepository;
         private readonly HotelDbContext _context; 
 
-        public ReserveRoomEventConsumer(IHotelRepo hotelRepository, HotelDbContext context) {
-            _hotelRepository = hotelRepository;
+        public ReserveRoomEventConsumer(HotelDbContext context) {
             _context = context;
         }
 
         public async Task Consume(ConsumeContext<ReserveRoomEvent> context) {
-            var hotelsRequest = new AvailableRoomsRequest {
-                ArrivalPlace = context.Message.City,
-                DepartureTime = context.Message.ArrivalDate,
-                ArrivalTime = context.Message.ReturnDate
-            };
+            bool reserved = false;
+            var eventMessage = context.Message;
+            var totalGuests = eventMessage.NumOfAdults + eventMessage.NumOfKidsTo18 + eventMessage.NumOfKidsTo10 + eventMessage.NumOfKidsTo3;
+
+            var suitableRooms = _context.Hotel
+                .Where(h => h.Name == eventMessage.Name)
+                .SelectMany(h => h.Rooms)
+                .Where(room => room.NumOfPeople >= totalGuests && room.RoomType == eventMessage.RoomType)
+                .ToList();
+
+            foreach (var room in suitableRooms) {
+                Guid room_id = room.Id;
+                var isAvailable = !_context.RoomEvent.Any(re => re.Status == "Reserved" && re.StartDate < eventMessage.ReturnDate.ToUniversalTime() && re.EndDate > eventMessage.ArrivalDate.ToUniversalTime() && re.RoomId == room_id);
             
-            var availableHotels = _hotelRepository.GetAvailableHotels(hotelsRequest);
-
-            foreach (var hotel in availableHotels) {
-                var freeRooms = hotel.Rooms.Where(room => 
-                    !room.RoomEvents.Any(re => re.Status == "Reserved" && re.StartDate < context.Message.ReturnDate && re.EndDate > context.Message.ArrivalDate)).ToList();
-
-                if (freeRooms.Any()) {
-                    foreach (var room in freeRooms) {
-                        room.RoomEvents.Add(new RoomEvent {
-                            Id = Guid.NewGuid(),
-                            RoomId = room.Id,
-                            Status = "Reserved",
-                            StartDate = context.Message.ArrivalDate,
-                            EndDate = context.Message.ReturnDate
-                        });
-                    }
-
+                if (isAvailable) {
+                    reserved = true;
+                    var NewEvent = new RoomEvent {
+                        Id = Guid.NewGuid(),
+                        RoomId = room.Id,
+                        Status = "Reserved",
+                        StartDate = eventMessage.ArrivalDate.ToUniversalTime(),
+                        EndDate = eventMessage.ReturnDate.ToUniversalTime()};
+                    _context.RoomEvent.Add(NewEvent);
                     try {
                         _context.SaveChanges();
-                        Console.WriteLine($"Reservation successful for Client ID: {context.Message.ClientId}");
+                        Console.WriteLine($"Reservation successful for Client ID: {eventMessage.ClientId}");
 
                         await context.RespondAsync(new ReserveRoomReplyEvent {
-                            Id = Guid.NewGuid(), // We can replace with context.Message.Id if necessary
-                            CorrelationId = context.Message.CorrelationId,
+                            Id = Guid.NewGuid(),
+                            CorrelationId = eventMessage.CorrelationId,
                             SuccessfullyReserved = true
                         });
-                        return;
                     } catch (Exception e) {
                         Console.WriteLine("Reservation failed: " + e.Message);
-                        await context.Publish(new ReserveRoomFailedEvent {
-                            Id = Guid.NewGuid(), // We can replace with context.Message.Id if necessary
-                            CorrelationId = context.Message.CorrelationId
+                        await context.RespondAsync(new ReserveRoomReplyEvent {
+                            Id = Guid.NewGuid(),
+                            CorrelationId = eventMessage.CorrelationId,
+                            SuccessfullyReserved = false
                         });
-                        return;
                     }
+                    break;
                 }
             }
-
-            Console.WriteLine("No available rooms that meet the criteria.");
-            await context.Publish(new ReserveRoomFailedEvent {
-                Id = Guid.NewGuid(), // We can replace with context.Message.Id if necessary
-                CorrelationId = context.Message.CorrelationId
-            });
+            if (!reserved) {
+                Console.WriteLine("No available rooms that meet the criteria.");
+                await context.RespondAsync(new ReserveRoomReplyEvent {
+                    Id = Guid.NewGuid(),
+                    CorrelationId = eventMessage.CorrelationId,
+                    SuccessfullyReserved = false
+                });
+            }
         }
     }
 }

@@ -4,6 +4,7 @@ namespace Shared.Trip.Events
 {
     public class ReservationDto
     {
+        public Guid OfferId {get; set;}
         public Guid ClientId { get; set; }
         public Guid FlightId { get; set; }
         public Guid HotelId { get; set; }

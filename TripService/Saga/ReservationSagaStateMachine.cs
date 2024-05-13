@@ -24,8 +24,6 @@ namespace TripService.Saga
         public Event<ProcessPaymentCustomerReplyEvent> ProcessPaymentCustomerReplyEvent {get; set;}
         public Schedule<ReservationState, ReservationTimeoutEvent> ReservationTimeoutEvent { get; set; }
 
-
-
         public ReservationStateMachine()
         {
             InstanceState(x => x.CurrentState, AskForReservation, AwaitingForHotelReservation, AwaitingForFlightReservation, AwaitingForFlightAndHotelReservation, 
@@ -40,6 +38,8 @@ namespace TripService.Saga
                 s.Received = r => r.CorrelateById(context => context.Message.CorrelationId);
             });
 
+            Console.WriteLine("I'm in SAGA!");
+
             Initially(
                 // Init Saga State Variables read from Event
                 When(ReservationTripEvent).Then(async context => {
@@ -49,6 +49,8 @@ namespace TripService.Saga
                         throw new Exception("Unable to retrive payload from reservation");
                     }
                     context.Saga.OfferId = payload.Message.OfferId;
+                    Console.WriteLine("Offert Id in Saga " + context.Saga.OfferId);
+                    Console.WriteLine("Offert Id in Message " + context.Message.OfferId);
                     context.Saga.ClientId = payload.Message.ClientId;
                     context.Saga.FlightId = payload.Message.FlightId;
                     context.Saga.HotelId = payload.Message.HotelId;
@@ -72,6 +74,7 @@ namespace TripService.Saga
                     context.Saga.HotelReservationSuccesful = false;
                     context.Saga.PaymentSuccesful = false;
                 })
+                
                 //.RespondAsync(context => context.Init<Reserve)    // Maybe we can ReplyEvent to API gateway
                 .PublishAsync(context => context.Init<ReserveRoomEvent>(new ReserveRoomEvent(){
                     CorrelationId = context.Saga.CorrelationId,
@@ -112,7 +115,7 @@ namespace TripService.Saga
                                 }))
                             .TransitionTo(AwaitingForFlightAndHotelReservation),
                         context => context
-                            //.Then(context => context.Saga.TravelReservationSuccesful = true) // useless IMO
+                            .Then(context => context.Saga.TravelReservationSuccesful = true)
                             .TransitionTo(AwaitingForHotelReservation)));
 
 
@@ -140,7 +143,7 @@ namespace TripService.Saga
                             {
                                 throw new Exception("Unable to retrieve payload with hotels response");
                             }
-                            context.Saga.HotelReservationSuccesful = payload.Message.Success;
+                            context.Saga.TravelReservationSuccesful = payload.Message.Success;
                         })
                         .TransitionTo(AwaitingForHotelReservation));
                     // What if someone has just reserved offer?
@@ -159,7 +162,7 @@ namespace TripService.Saga
                             {
                                 throw new Exception("Unable to retrieve payload with hotels response");
                             }
-                            context.Saga.HotelReservationSuccesful = payload.Message.Success;
+                            context.Saga.TravelReservationSuccesful = payload.Message.Success;
                         })
                         .TransitionTo(HotelAndFlightReserved)
                     // What if someone has just reserved offer??
@@ -190,6 +193,8 @@ namespace TripService.Saga
                 WhenEnter(HotelAndFlightReserved, binder => binder.Then(context => 
                 {
                     Console.WriteLine("-> SAGA STATE: Hotel and Flight reserved");
+                    Console.WriteLine("Hotel State: " + context.Saga.HotelReservationSuccesful);
+                    Console.WriteLine("Flight State: " + context.Saga.TravelReservationSuccesful);
                 })
                 .IfElse(context => context.Saga.HotelReservationSuccesful && context.Saga.TravelReservationSuccesful,
                     context => context
@@ -205,11 +210,12 @@ namespace TripService.Saga
                             OfferId = context.Saga.OfferId,
                             Status = "Waiting for payment"
                         }))
-                        .TransitionTo(HotelAndFlightReserved),
+                        // todo payment
+                        .TransitionTo(AwaitingForPayment),
                     context => context
                         .TransitionTo(ReservationFailed)));
 
-                During(HotelAndFlightReserved,
+                During(AwaitingForPayment,
                     When(ProcessPaymentCustomerReplyEvent)
                         .Then(context =>
                         {
@@ -230,7 +236,10 @@ namespace TripService.Saga
                         .Unschedule(ReservationTimeoutEvent)
                         .IfElse(context => context.Saga.PaymentSuccesful,
                             context => context.TransitionTo(TripReservedCorrectly),
-                            context => context.TransitionTo(ReservationFailed))
+                            context => context.TransitionTo(ReservationFailed)),
+                    When(ReservationTimeoutEvent.Received)
+                        .Unschedule(ReservationTimeoutEvent)
+                        .TransitionTo(ReservationFailed)
                 
                 );
                 WhenEnter(TripReservedCorrectly, binder => binder
@@ -250,11 +259,11 @@ namespace TripService.Saga
                     {
                         Console.WriteLine("-> SAGA STATE: Reservation Failed");
                     })
-                    .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
-                    CorrelationId = context.Saga.CorrelationId,
-                    OfferId = context.Saga.OfferId,
-                    Status = "Awailable"
-                }))
+                //     .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                //     CorrelationId = context.Saga.CorrelationId,
+                //     OfferId = context.Saga.OfferId,
+                //     Status = "Available"
+                // }))
                     // TODO Unbook Seats - same event with minus
                     // TODO Unbook Room
                     );

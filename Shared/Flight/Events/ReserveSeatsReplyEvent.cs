@@ -8,8 +8,9 @@ namespace Shared.Flight.Events
         public bool Success { get; set; }
         public string Message { get; set; }
 
-        public ReserveSeatsReplyEvent(Guid flightId, bool success, string message)
+        public ReserveSeatsReplyEvent(Guid correlationId, Guid flightId, bool success, string message)
         {
+            CorrelationId = correlationId;
             FlightId = flightId;
             Success = success;
             Message = message;
