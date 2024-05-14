@@ -9,9 +9,8 @@ axios.interceptors.request.use(request => {
   return request;
 });
 
-function SearchForm() {
+function SearchForm({ onSearch }) {
   const [destination, setDestination] = useState('Cypr'); // Initialize with 'Cypr'
-  // const [departureDate, setDepartureDate] = useState(''); // initialize!!!
   const today = new Date().toISOString().split('T')[0];
   const [departureDate, setDepartureDate] = useState(today);
   const [departurePlace, setDeparturePlace] = useState('Gdańsk (GDN)'); // Initialize with 'Gdańsk (GDN)'
@@ -23,19 +22,17 @@ function SearchForm() {
   const handleSubmit = async event => {
     event.preventDefault();
 
-    const result = await axios.get('http://localhost:8080/api/Trip/GetTripsByPreferences', {
-      params: {
-        Destination: destination,
-        DepartureDate: departureDate,
-        DeparturePlace: departurePlace,
-        NumOfAdults: numOfAdults,
-        NumOfKidsTo18: numOfKidsTo18,
-        NumOfKidsTo10: numOfKidsTo10,
-        NumOfKidsTo3: numOfKidsTo3,
-      },
-    });
+    const searchParams = {
+      Destination: destination,
+      DepartureDate: departureDate,
+      DeparturePlace: departurePlace,
+      NumOfAdults: numOfAdults,
+      NumOfKidsTo18: numOfKidsTo18,
+      NumOfKidsTo10: numOfKidsTo10,
+      NumOfKidsTo3: numOfKidsTo3,
+    };
 
-    console.log(result.data);
+    onSearch(searchParams);
   };
 
   return (

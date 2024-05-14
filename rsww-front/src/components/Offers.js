@@ -44,33 +44,28 @@ function Offers({ offers, clientId }) {
     <div className="offers">
       {offers.map((offer, index) => {
         const features = offer.features.split('|');
-        const visibleFeatures = showAllFeatures ? features : features.slice(0, 4);
+        const visibleFeatures = showAllFeatures ? features : features.slice(0, 1);
 
         return (
           <div key={index} className="offer-card">
             <h2>{offer.name}</h2>
-            <p>Country: {offer.country}</p>
-            <p>City: {offer.city}</p>
-            <p>Departure Place: {offer.departurePlace}</p>
-            <p>Arrival Place: {offer.arrivalPlace}</p>
-            <p>Departure Date: {offer.departureDate}</p>
-            <p>Return Date: {offer.returnDate}</p>
-            <p>Transport Type: {offer.transportType}</p>
-            <p>Price: {offer.price}</p>
-            <p>Meals Type: {offer.mealsType}</p>
-            <p>Room Type: {offer.roomType}</p>
-            <p>Discount: {offer.discountPercents * 100}%</p>
-            <p>Number of Nights: {offer.numOfNights}</p>
+            <p>Kraj: {offer.country}</p>
+            <p>Miasto: {offer.city}</p>
+            <p>Miejsce wyjazdu: {offer.departurePlace}</p>
+            <p>Miejsce przyjazdu: {offer.arrivalPlace}</p>
+            <p>Data wyjazdu: {offer.departureDate}</p>
+            <p>Data powrotu: {offer.returnDate}</p>
+            <p>Typ transportu: {offer.transportType}</p>
+            <p>Cena: {offer.price}</p>
+            <p>Typ posiłków: {offer.mealsType}</p>
+            <p>Zniżka: {offer.discountPercents * 100}%</p>
             <div>
-              Features:
-              {visibleFeatures.map((feature, i) => (
-                <p key={i}>{feature}</p>
-              ))}
+              Cechy: {visibleFeatures.join(', ')}
             </div>
             <button onClick={toggleShowAllFeatures}>
-              {showAllFeatures ? 'Show Less' : 'Show More'}
+              {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
             </button>
-            <button onClick={() => handleReserve(offer)}>Reserve</button>
+            <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
             <p>Status: {offer.status}</p>
           </div>
         );
