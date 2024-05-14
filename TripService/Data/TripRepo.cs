@@ -71,9 +71,31 @@ namespace TripService.Data
             _context.SaveChanges();
         }
 
-        // public bool SaveChanges()
-        // {
-        //     return (_context.SaveChanges() >= 0);
-        // }
+        public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
+                int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3, DateTime ArrivalDate,
+                DateTime ReturnDate, string RoomType)
+        {
+            IQueryable<Trip> query = _context.Trip.Where(t => 
+                t.HotelId == HotelId 
+                && t.NumOfAdults == NumOfAdults
+                && t.NumOfKidsTo18 == NumOfKidsTo18
+                && t.NumOfKidsTo10 == NumOfKidsTo10
+                && t.NumOfKidsTo3 == NumOfKidsTo3
+                && t.DepartureDate == ArrivalDate.ToUniversalTime()
+                && t.ReturnDate == ReturnDate.ToUniversalTime()
+                && t.RoomType == RoomType
+            );
+
+            return query.ToList();
+        }
+
+        public IEnumerable<Trip> GetTripsByFlightId(Guid flightId)
+        {
+            IQueryable<Trip> query = _context.Trip.Where(p => 
+                p.FlightId == flightId
+            );
+            
+            return query.ToList();
+        }
     }
 }

@@ -34,7 +34,12 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
-    cfg.AddConsumer<ChangeReservationStatusConsumer>(context =>
+    cfg.AddConsumer<ChangeRoomsAvailabilityStatusConsumer>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
+    cfg.AddConsumer<ChangeSeatsAvailabilityStatusConsumer>(context =>
     {
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
