@@ -7,8 +7,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMassTransit(cfg =>
 {
-    cfg.AddConsumer<ProcessPaymentEvent>();
-
+    cfg.AddConsumer<ProcessPaymentEvent>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });;
+    cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
         rabbitCfg.Host("rabbitmq", "/", h =>
@@ -16,6 +20,7 @@ builder.Services.AddMassTransit(cfg =>
             h.Username("guest");
             h.Password("guest");
         });
+        rabbitCfg.UseDelayedMessageScheduler();
         rabbitCfg.ConfigureEndpoints(context);
     });
 });

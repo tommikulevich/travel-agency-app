@@ -44,7 +44,7 @@ namespace ApiGateway.Controllers
             var request = new ReservationTripEvent()
             {
                 Id = reservationId,
-                CorrelationId = reservationId,
+                CorrelationId = reservationDto.OfferId,
                 OfferId = reservationDto.OfferId,
                 ClientId = reservationDto.ClientId,
                 FlightId = reservationDto.FlightId,

@@ -225,7 +225,7 @@ namespace TripService.Saga
                             {
                                 throw new Exception("Unable to retrieve payload with hotels response");
                             }
-                            if (payload.Message.Response == "ACCEPTED")
+                            if (payload.Message.result)
                             {
                                 context.Saga.PaymentSuccesful = true;
                             }
