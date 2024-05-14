@@ -51,6 +51,21 @@ namespace FlightService.Repo
 
             _context.SaveChanges();
         }
+
+        public int GetNumOfFreeSeatsOfSpecificFlight(Guid flightId)
+        {
+            var flight = _context.Flight.Find(flightId);
+            if (flight == null)
+            {
+                return 0;
+            }
+
+            var numOfFreeSeats = flight.NumOfSeats 
+                - _context.FlightEvent.Where(e => e.FlightId == flightId).Sum(e => e.ReservedSeats); 
+    
+            return numOfFreeSeats;
+        }
+
         public IEnumerable<FlightEntity> GetAllFlights()
         {
              return _context.Flight

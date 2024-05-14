@@ -15,5 +15,9 @@ namespace TripService.Data
         void CreateTrip(Trip Trip);
         void SaveTrip(Trip Trip);
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus, Guid? UserId);
+        public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
+                int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3, DateTime ArrivalDate,
+                DateTime ReturnDate, string RoomType);
+        public IEnumerable<Trip> GetTripsByFlightId(Guid flightId);
     }
 }

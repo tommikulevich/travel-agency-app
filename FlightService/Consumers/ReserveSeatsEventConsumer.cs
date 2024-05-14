@@ -20,6 +20,13 @@ namespace Flight.Consumers
             {
                 _flightService.ReserveSeats(context.Message.FlightId, context.Message.Seats);
                 await context.RespondAsync(new ReserveSeatsReplyEvent(context.Message.CorrelationId ,context.Message.FlightId, true, "Seats successfully reserved."));
+
+                int numOfFreeSeats = _flightService.GetNumOfFreeSeatsOfSpecificFlight(context.Message.FlightId);
+                await context.Publish(new SeatsAvailabilityAfterReservationEvent {
+                    Id = Guid.NewGuid(),
+                    FlightId = context.Message.FlightId,
+                    NumOfFreeSeats = numOfFreeSeats
+                });
             }
             catch (Exception ex)
             {
