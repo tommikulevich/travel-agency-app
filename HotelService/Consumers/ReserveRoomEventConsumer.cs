@@ -59,6 +59,7 @@ namespace HotelService.Consumers {
                     await context.RespondAsync(new ReserveRoomReplyEvent {
                         Id = Guid.NewGuid(),
                         CorrelationId = eventMessage.CorrelationId,
+                        RoomId = avaliableRoomId,
                         SuccessfullyReserved = true
                     });
 
@@ -80,6 +81,7 @@ namespace HotelService.Consumers {
                     await context.RespondAsync(new ReserveRoomReplyEvent {
                         Id = Guid.NewGuid(),
                         CorrelationId = eventMessage.CorrelationId,
+                        RoomId = avaliableRoomId,
                         SuccessfullyReserved = false
                     });
                 }
@@ -88,6 +90,7 @@ namespace HotelService.Consumers {
                 await context.RespondAsync(new ReserveRoomReplyEvent {
                     Id = Guid.NewGuid(),
                     CorrelationId = eventMessage.CorrelationId,
+                    RoomId = avaliableRoomId,
                     SuccessfullyReserved = false
                 });
             }

@@ -21,7 +21,7 @@ namespace TripService.Consumers
             var Trips = _TripRepo.GetTripsByFlightId(flightId);
             foreach(var Trip in Trips)
             {
-                if ( (Trip.NumOfAdults + Trip.NumOfKidsTo18 + Trip.NumOfKidsTo10) < numOfFreeSeats ) 
+                if ( (Trip.NumOfAdults + Trip.NumOfKidsTo18 + Trip.NumOfKidsTo10) > numOfFreeSeats ) 
                 {
                     _TripRepo.ChangeReservationStatus(Trip.Id, "Lack of flight seats", null);
                 }   
