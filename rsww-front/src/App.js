@@ -11,23 +11,31 @@ import './App.css';
 function App() {
   const [offers, setOffers] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await axios('http://localhost:8080/api/Trip/GetAllTrips');
-      setOffers(result.data);
-    };
+  const fetchData = async () => {
+    const result = await axios('http://localhost:8080/api/Trip/GetAllTrips');
+    setOffers(result.data);
+  };
 
+  useEffect(() => {
     fetchData();
   }, []);
+
+  const handleSearch = async (searchParams) => {
+    const result = await axios.get('http://localhost:8080/api/Trip/GetTripsByPreferences', {
+      params: searchParams,
+    });
+
+    setOffers(result.data);
+  };
 
   return (
     <Router>
       <div className="App">
-        <Header />
+        <Header onTitleClick={fetchData} />
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/" element={<><SearchForm /><Offers offers={offers} /></>} />
+          <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} /></>} />
         </Routes>
       </div>
     </Router>

@@ -4,7 +4,7 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-image: url('https://wallpapers.com/images/hd/4k-beach-nature-view-s0jgy1y9poz5zg54.jpg');
+  background-image: url('https://pix4free.org/assets/library/2020-12-13/originals/beach003.jpg');
   background-size: cover;
 }
 
@@ -25,18 +25,18 @@ body {
   border-radius: 5px; /* This will make the corners rounded */
 }
 
-
 form {
   display: flex;
-  flex-direction: column;
-  align-items: start;
+  flex-wrap: wrap;
+  justify-content: space-between;
 }
 
-form label {
-  margin-bottom: 10px;
+form input[type="submit"] {
+  flex: 1 0 50%;
+  margin-top: 20px;
 }
 
-input[type="text"], input[type="password"], input[type="date"], input[type="number"] {
+input[type="text"], input[type="password"], input[type="date"], input[type="number"], select {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -57,4 +57,15 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #ff6347;
+}
+
+form label {
+  flex: 1 0 15%; /* Adjust this value as needed */
+  margin-right: 10px;
+}
+
+
+
+form label:nth-last-child(-n+7) {
+  flex-basis: 20%;
 }
