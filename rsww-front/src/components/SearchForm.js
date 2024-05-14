@@ -11,7 +11,9 @@ axios.interceptors.request.use(request => {
 
 function SearchForm() {
   const [destination, setDestination] = useState('Cypr'); // Initialize with 'Cypr'
-  const [departureDate, setDepartureDate] = useState('');
+  // const [departureDate, setDepartureDate] = useState(''); // initialize!!!
+  const today = new Date().toISOString().split('T')[0];
+  const [departureDate, setDepartureDate] = useState(today);
   const [departurePlace, setDeparturePlace] = useState('Gdańsk (GDN)'); // Initialize with 'Gdańsk (GDN)'
   const [numOfAdults, setNumOfAdults] = useState(0);
   const [numOfKidsTo18, setNumOfKidsTo18] = useState(0);
