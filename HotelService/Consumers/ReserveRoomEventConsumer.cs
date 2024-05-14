@@ -38,6 +38,7 @@ namespace HotelService.Consumers {
                     try {
                         _context.SaveChanges();
                         Console.WriteLine($"Reservation successful for Client ID: {eventMessage.ClientId}");
+                        // publish na trip
 
                         await context.RespondAsync(new ReserveRoomReplyEvent {
                             Id = Guid.NewGuid(),

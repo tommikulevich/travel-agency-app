@@ -99,6 +99,7 @@ namespace TripService.Saga
                         }))
                 .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
                     CorrelationId = context.Saga.CorrelationId,
+                    ClientId = context.Saga.ClientId,
                     OfferId = context.Saga.OfferId,
                     Status = "Pending"
                 }))
@@ -207,6 +208,7 @@ namespace TripService.Saga
                         //Change status reservation
                         .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
                             CorrelationId = context.Saga.CorrelationId,
+                            ClientId = context.Saga.ClientId,
                             OfferId = context.Saga.OfferId,
                             Status = "Waiting for payment"
                         }))
@@ -250,6 +252,7 @@ namespace TripService.Saga
                     .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
                     CorrelationId = context.Saga.CorrelationId,
                     OfferId = context.Saga.OfferId,
+                    ClientId = context.Saga.ClientId,
                     Status = "Reserved"
                 }))
                     // Event change status reservation
@@ -259,11 +262,12 @@ namespace TripService.Saga
                     {
                         Console.WriteLine("-> SAGA STATE: Reservation Failed");
                     })
-                //     .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
-                //     CorrelationId = context.Saga.CorrelationId,
-                //     OfferId = context.Saga.OfferId,
-                //     Status = "Available"
-                // }))
+                    .PublishAsync(context => context.Init<ChangeReservationStatusEvent>(new ChangeReservationStatusEvent(){
+                    CorrelationId = context.Saga.CorrelationId,
+                    ClientId = null,
+                    OfferId = context.Saga.OfferId,
+                    Status = "Available"
+                }))
                     // TODO Unbook Seats - same event with minus
                     // TODO Unbook Room
                     );

@@ -15,9 +15,10 @@ namespace TripService.Consumers
         public async Task Consume(ConsumeContext<ChangeReservationStatusEvent> context)
         {
             Console.WriteLine("Reservation status changed");
+            Guid? ClientId = context.Message.ClientId;
             var offerId = context.Message.OfferId;
             var status = context.Message.Status;
-            _TripRepo.ChangeReservationStatus(offerId, status);
+            _TripRepo.ChangeReservationStatus(offerId, status, ClientId);
             // var TripsDto = new List<TripDto>();
             // int i = 0;
             // foreach(var Trip in Trips)

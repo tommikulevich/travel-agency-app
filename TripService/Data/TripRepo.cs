@@ -62,10 +62,11 @@ namespace TripService.Data
             _context.SaveChanges();
         }
 
-        public void ChangeReservationStatus(Guid TripId, string newReservationStatus)
+        public void ChangeReservationStatus(Guid TripId, string newReservationStatus, Guid? UserId)
         {
             // var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
             // trip.Status = newReservationStatus;
+            _context.Trip.FirstOrDefault(t => t.Id == TripId).ClientId = UserId;
             _context.Trip.FirstOrDefault(t => t.Id == TripId).Status = newReservationStatus;
             _context.SaveChanges();
         }
