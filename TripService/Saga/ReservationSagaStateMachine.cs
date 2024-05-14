@@ -255,6 +255,7 @@ namespace TripService.Saga
                     ClientId = context.Saga.ClientId,
                     Status = "Reserved"
                 }))
+                .Finalize()
                     // Event change status reservation
                     );
                 WhenEnter(ReservationFailed, binder => binder
@@ -268,11 +269,12 @@ namespace TripService.Saga
                     OfferId = context.Saga.OfferId,
                     Status = "Available"
                 }))
+                .Finalize()
                     // TODO Unbook Seats - same event with minus
                     // TODO Unbook Room
                     );
 
-
+                SetCompletedWhenFinalized();
 
         }
     }

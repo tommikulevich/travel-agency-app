@@ -24,6 +24,7 @@ namespace PaymentService.Consumers
                 Console.WriteLine("Payment accepted!");
                 result = true;
             }
+            await context.RespondAsync<ProcessPaymentCustomerReplyEvent>(new ProcessPaymentCustomerReplyEvent() {CorrelationId = OfferId, result = result});
             await context.Publish(new ProcessPaymentCustomerReplyEvent() {CorrelationId = OfferId, result = result});
 
         }
