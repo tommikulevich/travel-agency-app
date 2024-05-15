@@ -104,7 +104,7 @@ namespace TripService.Data
             return query.ToList();
         }
 
-        public IEnumerable<Trip> GetTripsByFlightId(Guid flightId)
+        public IEnumerable<Trip> GetTripsByFlightId(Guid? flightId)
         {
             IQueryable<Trip> query = _context.Trip.Where(p => 
                 p.FlightId == flightId
