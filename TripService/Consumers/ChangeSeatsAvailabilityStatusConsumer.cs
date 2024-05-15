@@ -24,7 +24,11 @@ namespace TripService.Consumers
                 if ( (Trip.NumOfAdults + Trip.NumOfKidsTo18 + Trip.NumOfKidsTo10) > numOfFreeSeats ) 
                 {
                     _TripRepo.ChangeReservationStatus(Trip.Id, "Lack of flight seats", null);
-                }   
+                } 
+                else if ( Trip.Status == "Lack of flight seats" )  
+                {
+                    _TripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
+                }
             }
         }
     }
