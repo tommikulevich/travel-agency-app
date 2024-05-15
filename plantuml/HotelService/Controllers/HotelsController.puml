@@ -1,0 +1,7 @@
+@startuml
+class HotelsController {
+    + HotelsController(publishEndpoint:IPublishEndpoint)
+    + <<async>> GetAvailableRooms(request:AvailableRoomsRequest) : Task<ActionResult>
+}
+ControllerBase <|-- HotelsController
+@enduml

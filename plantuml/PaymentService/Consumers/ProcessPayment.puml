@@ -1,0 +1,9 @@
+@startuml
+class ProcessPaymentEvent {
+    + <<async>> Consume(context:ConsumeContext<ProcessPaymentFromCustomerEvent>) : Task
+    + <<async>> ProcessPaymentFromCard(credentials:CardCredentials) : Task<bool>
+}
+class "IConsumer`1"<T> {
+}
+"IConsumer`1" "<ProcessPaymentFromCustomerEvent>" <|-- ProcessPaymentEvent
+@enduml

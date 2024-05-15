@@ -1,0 +1,11 @@
+@startuml
+class GetAvailableFlightsEvent {
+    + DeparturePlace : string <<get>> <<set>>
+    + ArrivalPlace : string <<get>> <<set>>
+    + FreeSeats : int <<get>> <<set>>
+    + GetAvailableFlightsEvent(departurePlace:string, arrivalPlace:string, departureTime:DateTime, arrivalTime:DateTime, freeSeats:int)
+}
+GetAvailableFlightsEvent --> "CorrelationId" Guid
+GetAvailableFlightsEvent --> "DepartureTime" DateTime
+GetAvailableFlightsEvent --> "ArrivalTime" DateTime
+@enduml

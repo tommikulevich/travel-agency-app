@@ -1,0 +1,16 @@
+@startuml
+class ProcessPaymentFromCustomerEvent {
+    + Price : double <<get>> <<set>>
+    + ProcessPaymentFromCustomerEvent(card:CardCredentials, price:double)
+    + ProcessPaymentFromCustomerEvent()
+}
+class CardCredentials {
+    + CardNumber : string <<get>> <<set>>
+    + CVV : int <<get>> <<set>>
+    + ExpirationDate : string <<get>> <<set>>
+    + FullName : string <<get>> <<set>>
+}
+ProcessPaymentFromCustomerEvent --> "Card" CardCredentials
+ProcessPaymentFromCustomerEvent --> "Id" Guid
+ProcessPaymentFromCustomerEvent --> "CorrelationID" Guid
+@enduml

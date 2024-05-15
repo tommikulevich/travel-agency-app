@@ -1,0 +1,13 @@
+@startuml
+class Hotel {
+    + Name : string <<get>> <<set>>
+    + Country : string <<get>> <<set>>
+    + City : string <<get>> <<set>>
+    + AirportName : string <<get>> <<set>>
+    + Standard : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Hotel --> "Id" Guid
+Hotel --> "Rooms<Room>" "List`1"
+@enduml

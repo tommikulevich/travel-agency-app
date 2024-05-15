@@ -1,0 +1,9 @@
+@startuml
+class AvailableRoomsConsumer {
+    + AvailableRoomsConsumer(hotelRepo:IHotelRepo)
+    + <<async>> Consume(context:ConsumeContext<AvailableRoomsRequest>) : Task
+}
+class "IConsumer`1"<T> {
+}
+"IConsumer`1" "<AvailableRoomsRequest>" <|-- AvailableRoomsConsumer
+@enduml

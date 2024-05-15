@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 header {
     display: flex;
     justify-content: space-between;
@@ -16,12 +18,19 @@ header {
     display: flex;
     gap: 10px;
   }
-  
+
   header a.button {
     color: white;
     text-decoration: none;
     padding: 10px 20px;
     background-color: #4CAF50;
+    border-radius: 5px;
+  }
+
+  .button-logout {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
     border-radius: 5px;
   }
   
@@ -32,4 +41,5 @@ header {
   .separator {
     width: 10px;
   }
+
   

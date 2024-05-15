@@ -1,0 +1,6 @@
+@startuml
+class GetAllTripsEvent {
+}
+GetAllTripsEvent --> "Id" Guid
+GetAllTripsEvent --> "CorrelationId" Guid
+@enduml
