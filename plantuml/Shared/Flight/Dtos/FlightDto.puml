@@ -1,0 +1,11 @@
+@startuml
+class FlightDto {
+    + Name : string <<get>> <<set>>
+    + DeparturePlace : string <<get>> <<set>>
+    + ArrivalPlace : string <<get>> <<set>>
+    + NumOfSeats : int <<get>> <<set>>
+}
+FlightDto --> "Id" Guid
+FlightDto --> "DepartureTime" DateTime
+FlightDto --> "ArrivalTime" DateTime
+@enduml

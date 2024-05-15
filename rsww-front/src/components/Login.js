@@ -1,17 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Importuj useNavigate
+import { AppContext } from '../App';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const { setClientId } = useContext(AppContext);
+  const navigate = useNavigate(); // Użyj hooka useNavigate
 
   const handleSubmit = async event => {
     event.preventDefault();
-    // Tutaj możesz wysłać dane do swojego backendu
     try {
-      const response = await axios.post('/api/auth/login', { username, password });
+      const response = await axios.post(`http://localhost:8080/api/Login/Auth?UserName=${username}&Password=${password}`);
       console.log(response.data);
+      setClientId(response.data.userId);
+      console.log('UserID_konsolk_loginjs:', response.data.userId);
+      navigate('/'); // Przekieruj do strony głównej
     } catch (error) {
+      console.log('Error')
       console.error(error);
     }
   };

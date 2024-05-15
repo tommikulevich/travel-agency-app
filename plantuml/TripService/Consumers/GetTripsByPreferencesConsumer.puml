@@ -1,0 +1,9 @@
+@startuml
+class GetTripsByPreferencesConsumer {
+    + GetTripsByPreferencesConsumer(TripRepo:ITripRepo)
+    + <<async>> Consume(context:ConsumeContext<GetTripByPreferencesEvent>) : Task
+}
+class "IConsumer`1"<T> {
+}
+"IConsumer`1" "<GetTripByPreferencesEvent>" <|-- GetTripsByPreferencesConsumer
+@enduml

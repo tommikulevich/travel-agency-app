@@ -1,0 +1,9 @@
+@startuml
+class RoomEvent {
+    + Status : string <<get>> <<set>>
+}
+RoomEvent --> "Id" Guid
+RoomEvent --> "RoomId" Guid
+RoomEvent --> "StartDate" DateTime
+RoomEvent --> "EndDate" DateTime
+@enduml

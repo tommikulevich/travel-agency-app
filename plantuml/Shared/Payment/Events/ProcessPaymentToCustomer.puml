@@ -1,0 +1,12 @@
+@startuml
+class ProcessPaymentReplyCustomerEvent {
+    + <<const>> ACCEPTED : string = "ACCEPTED"
+    + <<const>> INVALID_CARD : string = "INVALID CARD"
+    + <<const>> LIMITS : string = "TOO LOW LIMITS"
+    + Response : string <<get>> <<set>>
+    + ProcessPaymentReplyCustomerEvent(response:string, correlationId:Guid)
+    + ProcessPaymentReplyCustomerEvent()
+}
+ProcessPaymentReplyCustomerEvent --> "Id" Guid
+ProcessPaymentReplyCustomerEvent --> "CorrelationID" Guid
+@enduml

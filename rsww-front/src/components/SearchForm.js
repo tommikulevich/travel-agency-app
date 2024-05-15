@@ -14,9 +14,9 @@ function SearchForm({ onSearch }) {
   const today = new Date().toISOString().split('T')[0];
   const [departureDate, setDepartureDate] = useState(today);
   const [departurePlace, setDeparturePlace] = useState('Gdańsk (GDN)'); // Initialize with 'Gdańsk (GDN)'
-  const [numOfAdults, setNumOfAdults] = useState(0);
-  const [numOfKidsTo18, setNumOfKidsTo18] = useState(0);
-  const [numOfKidsTo10, setNumOfKidsTo10] = useState(0);
+  const [numOfAdults, setNumOfAdults] = useState(1);
+  const [numOfKidsTo18, setNumOfKidsTo18] = useState(1);
+  const [numOfKidsTo10, setNumOfKidsTo10] = useState(1);
   const [numOfKidsTo3, setNumOfKidsTo3] = useState(0);
 
   const handleSubmit = async event => {

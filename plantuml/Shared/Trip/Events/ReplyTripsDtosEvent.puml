@@ -1,0 +1,9 @@
+@startuml
+class ReplyTripsDtosEvent {
+}
+class "IEnumerable`1"<T> {
+}
+ReplyTripsDtosEvent --> "Id" Guid
+ReplyTripsDtosEvent --> "CorrelationId" Guid
+ReplyTripsDtosEvent --> "Trips<TripDto>" "IEnumerable`1"
+@enduml

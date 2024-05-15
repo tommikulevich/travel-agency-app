@@ -1,0 +1,23 @@
+@startuml
+class TripDto {
+    + OfferId : string <<get>> <<set>>
+    + ClientId : string <<get>> <<set>>
+    + FlightId : string <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Country : string <<get>> <<set>>
+    + DeparturePlace : string <<get>> <<set>>
+    + NumOfAdults : int <<get>> <<set>>
+    + NumOfKidsTo18 : int <<get>> <<set>>
+    + NumOfKidsTo10 : int <<get>> <<set>>
+    + NumOfKidsTo3 : int <<get>> <<set>>
+    + TransportType : string <<get>> <<set>>
+    + Price : double <<get>> <<set>>
+    + MealsType : string <<get>> <<set>>
+    + RoomType : string <<get>> <<set>>
+    + DiscountPercents : double <<get>> <<set>>
+    + NumOfNights : int <<get>> <<set>>
+    + Status : string <<get>> <<set>>
+}
+TripDto --> "DepartureDate" DateTime
+TripDto --> "ReturnDate" DateTime
+@enduml

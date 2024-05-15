@@ -1,0 +1,10 @@
+@startuml
+class "AddConsumer`1"<T> {
+}
+class "ConfigureConsumer`1"<T> {
+}
+class "AddDbContext`1"<T> {
+}
+class "AddScoped`2"<T1,T2> {
+}
+@enduml
