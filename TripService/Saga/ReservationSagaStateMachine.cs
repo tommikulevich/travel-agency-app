@@ -104,7 +104,7 @@ namespace TripService.Saga
                     Status = "W toku"
                 }))
                 // Check if flight reserve is needed
-                .IfElse(context => context.Saga.TransportType == "Airplane",
+                .IfElse(context => context.Saga.TransportType == "Samolot",
                         context => context
                             .PublishAsync(context => context.Init<ReserveSeatsEvent>(
                                 new ReserveSeatsEvent()

@@ -15,7 +15,7 @@ namespace TripService.Consumers
 
         public async Task Consume(ConsumeContext<SeatsAvailabilityAfterReservationEvent> context)
         {
-            Guid flightId = context.Message.FlightId;
+            Guid? flightId = context.Message.FlightId;
             int numOfFreeSeats = context.Message.NumOfFreeSeats;
 
             var Trips = _TripRepo.GetTripsByFlightId(flightId);
