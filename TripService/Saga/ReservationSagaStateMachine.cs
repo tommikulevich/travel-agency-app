@@ -135,6 +135,7 @@ namespace TripService.Saga
                                 throw new Exception("Unable to retrieve payload with hotels response");
                             }
                             context.Saga.HotelReservationSuccesful = payload.Message.SuccessfullyReserved;
+                            context.Saga.ReservedRoomId = payload.Message.RoomId;
                         })
                         .TransitionTo(AwaitingForFlightReservation),
                     When(ReserveSeatsReplyEvent)
@@ -184,6 +185,7 @@ namespace TripService.Saga
                                 throw new Exception("Unable to retrieve payload with hotels response");
                             }
                             context.Saga.HotelReservationSuccesful = payload.Message.SuccessfullyReserved;
+                            context.Saga.ReservedRoomId = payload.Message.RoomId;
 
                         })
                         .TransitionTo(HotelAndFlightReserved)
@@ -268,8 +270,28 @@ namespace TripService.Saga
                     ClientId = null,
                     OfferId = context.Saga.OfferId,
                     Status = "Available"
-                }))
-                .Finalize()
+                    }))
+                    .IfElse(context => context.Saga.HotelReservationSuccesful,
+                        context => context
+                        .PublishAsync(context => context.Init<UnreserveRoomEvent>(new UnreserveRoomEvent(){
+                        CorrelationId = context.Saga.CorrelationId,
+                        ClientId = context.Saga.ClientId,
+                        RoomId = context.Saga.ReservedRoomId,
+                        ArrivalDate = context.Saga.DepartureDate,
+                        ReturnDate = context.Saga.ReturnDate
+                        })),
+                        context => context
+                    )
+                    .IfElse(context => context.Saga.TravelReservationSuccesful,
+                        context => context
+                        .PublishAsync(context => context.Init<ReserveSeatsEvent>(new ReserveSeatsEvent(){
+                        CorrelationId = context.Saga.CorrelationId,
+                        FlightId = context.Saga.FlightId,
+                        Seats = (-1)*(context.Saga.NumOfAdults + context.Saga.NumOfKidsTo18 + context.Saga.NumOfKidsTo10)
+                        })),
+                        context => context
+                    )
+                    .Finalize()
                     // TODO Unbook Seats - same event with minus
                     // TODO Unbook Room
                     );

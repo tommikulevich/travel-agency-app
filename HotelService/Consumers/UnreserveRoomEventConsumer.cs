@@ -15,8 +15,8 @@ namespace HotelService.Consumers {
 
             var roomEvents = _context.RoomEvent.Where(
                 re => re.RoomId == context.Message.RoomId &&
-                      re.StartDate == context.Message.ArrivalDate &&
-                      re.EndDate == context.Message.ReturnDate &&
+                      re.StartDate == context.Message.ArrivalDate.ToUniversalTime() &&
+                      re.EndDate == context.Message.ReturnDate.ToUniversalTime() &&
                       re.Status == "Reserved").ToList();
 
             if (!roomEvents.Any()) {

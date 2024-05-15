@@ -31,6 +31,7 @@ namespace TripService.Saga
         public int NumOfNights {get; set;}   
         public string Features {get;set;} 
         public string Status {get;set;}  
+        public Guid ReservedRoomId {get;set;} 
 
         public bool TravelReservationSuccesful { get; set; }
         public bool HotelReservationSuccesful { get; set; }
