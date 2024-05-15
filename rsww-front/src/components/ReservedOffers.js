@@ -48,7 +48,7 @@ function ReservedOffers() {
           <p>Cena: {offer.price}</p>
           <p>Typ posiłków: {offer.mealsType}</p>
           <p>Zniżka: {offer.discountPercents * 100}%</p>
-          {offer.status !== 'Zarezerwowana' && <button onClick={() => handleBuy(offer.id, offer.price)}>Zapłać</button>} {/* Dodaj warunek do renderowania przycisku */}
+          {offer.status == 'Oczekiwanie na płatność' && <button onClick={() => handleBuy(offer.id, offer.price)}>Zapłać</button>} {/* Dodaj warunek do renderowania przycisku */}
         <p>Status: {offer.status}</p>
         </div>
       ))}

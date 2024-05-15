@@ -77,16 +77,16 @@ services:
     networks:
       - backend # connected networks
   
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: ./rsww-front/Dockerfile
-  #   depends_on:
-  #     - apigateway
-  #   ports:
-  #     - 3000:3000
-  #   networks:
-  #     - backend
+  frontend:
+    build:
+      context: .
+      dockerfile: ./rsww-front/Dockerfile
+    depends_on:
+      - apigateway
+    ports:
+      - 3000:3000
+    networks:
+      - backend
 
 networks:
   frontend: {}
