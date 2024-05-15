@@ -1,0 +1,7 @@
+@startuml
+class FlightSeatEvent {
+    + ReservedSeats : int <<get>> <<set>>
+}
+FlightSeatEvent --> "Id" Guid
+FlightSeatEvent --> "FlightId" Guid
+@enduml

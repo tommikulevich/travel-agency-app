@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
+import { AppContext } from '../App';
 import axios from 'axios';
 import './Offers.css';
+import { useNavigate } from 'react-router-dom'; // Importuj useNavigate
 
-function Offers({ offers, clientId }) {
+function Offers({ offers }) {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
-
+  const { clientId } = useContext(AppContext);
+  const navigate = useNavigate();
   const toggleShowAllFeatures = () => {
     setShowAllFeatures(!showAllFeatures);
   };
@@ -36,12 +39,19 @@ function Offers({ offers, clientId }) {
       Status: offer.status
     };
   
-    const response = await axios.post('http://localhost:8080/api/Trip/ReserveTrip', reservationDto);
-    console.log(response.data);
+    try {
+      const response = await axios.post('http://localhost:8080/api/Trip/ReserveTrip', reservationDto);
+      console.log(response.data);
+      navigate('/user-offers'); // Przekieruj użytkownika do '/user-offers'
+    } catch (error) {
+      console.error(`An error occurred while reserving the offer: `, error);
+      alert("Ktoś właśnie zgarnął Ci ofertę sprzed nosa!");
+      // Here you can add code to handle the error, like showing a message to the user
+    }
   };
 
   return (
-    <div className="offers">
+    <div className="offers" style={{ maxHeight: '700px', overflowY: 'scroll' }}>
       {offers.map((offer, index) => {
         const features = offer.features.split('|');
         const visibleFeatures = showAllFeatures ? features : features.slice(0, 1);
@@ -65,7 +75,7 @@ function Offers({ offers, clientId }) {
             <button onClick={toggleShowAllFeatures}>
               {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
             </button>
-            <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
+            {offer.status!=="Zarezerwowana" && clientId && <button onClick={() => handleReserve(offer)}>Rezerwuj</button>} {/* Dodaj warunek do renderowania przycisku */}
             <p>Status: {offer.status}</p>
           </div>
         );

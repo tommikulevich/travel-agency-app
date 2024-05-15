@@ -1,0 +1,9 @@
+@startuml
+class GetAvailableFlightsEventConsumer {
+    + GetAvailableFlightsEventConsumer(flightService:IFlightRepo)
+    + <<async>> Consume(context:ConsumeContext<GetAvailableFlightsEvent>) : Task
+}
+class "IConsumer`1"<T> {
+}
+"IConsumer`1" "<GetAvailableFlightsEvent>" <|-- GetAvailableFlightsEventConsumer
+@enduml

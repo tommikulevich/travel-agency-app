@@ -1,0 +1,13 @@
+@startuml
+class Room {
+    + NumOfPeople : int <<get>> <<set>>
+    + NumOfRooms : int <<get>> <<set>>
+    + RoomType : string <<get>> <<set>>
+    + Features : string <<get>> <<set>>
+}
+class "List`1"<T> {
+}
+Room --> "Id" Guid
+Room --> "HotelId" Guid
+Room --> "RoomEvents<RoomEvent>" "List`1"
+@enduml
