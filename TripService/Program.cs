@@ -14,7 +14,6 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
-// builder.Services.AddDbContext<AppDbContext>(opt => opt.UseInMemoryDatabase("InMem"));
 builder.Services.AddScoped<ITripRepo, TripRepo>();
 builder.Services.AddMassTransit(cfg =>
 {
@@ -50,6 +49,11 @@ builder.Services.AddMassTransit(cfg =>
         context.UseInMemoryOutbox();
     });
     cfg.AddConsumer<UnchangeRoomsAvailabilityStatusConsumer>(context =>
+{
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
+    cfg.AddConsumer<CheckReservationStatusConsumer>(context =>
     {
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();

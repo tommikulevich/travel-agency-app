@@ -29,7 +29,7 @@ namespace FlightService.Repo
         }
 
 
-       public void ReserveSeats(Guid Id, int seats)
+       public void ReserveSeats(Guid? Id, int seats)
         {
             var flight = _context.Flight.Find(Id);
             if (flight == null)
@@ -52,7 +52,7 @@ namespace FlightService.Repo
             _context.SaveChanges();
         }
 
-        public int GetNumOfFreeSeatsOfSpecificFlight(Guid flightId)
+        public int GetNumOfFreeSeatsOfSpecificFlight(Guid? flightId)
         {
             var flight = _context.Flight.Find(flightId);
             if (flight == null)

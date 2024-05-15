@@ -1,0 +1,4 @@
+@startuml
+class "AddConsumer`1"<T> {
+}
+@enduml

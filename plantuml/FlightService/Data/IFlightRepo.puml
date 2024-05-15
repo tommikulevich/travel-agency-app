@@ -1,0 +1,7 @@
+@startuml
+interface IFlightRepo {
+    + GetAvailableFlights(DeparturePlace:string, ArrivalPlace:string, DepartureTime:DateTime, ArrivalTime:DateTime, freeSeats:int) : IEnumerable<FlightEntity>
+    + ReserveSeats(Id:Guid, seats:int) : void
+    + GetAllFlights() : IEnumerable<FlightEntity>
+}
+@enduml

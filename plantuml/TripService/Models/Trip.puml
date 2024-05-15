@@ -1,0 +1,54 @@
+@startuml
+class Trip {
+    + OfferId : string <<get>> <<set>>
+    + ClientId : string <<get>> <<set>>
+    + FlightId : string <<get>> <<set>>
+    + Name : string <<get>> <<set>>
+    + Country : string <<get>> <<set>>
+    + DeparturePlace : string <<get>> <<set>>
+    + NumOfAdults : int <<get>> <<set>>
+    + NumOfKidsTo18 : int <<get>> <<set>>
+    + NumOfKidsTo10 : int <<get>> <<set>>
+    + NumOfKidsTo3 : int <<get>> <<set>>
+    + TransportType : string <<get>> <<set>>
+    + Price : double <<get>> <<set>>
+    + MealsType : string <<get>> <<set>>
+    + RoomType : string <<get>> <<set>>
+    + DiscountPercents : double <<get>> <<set>>
+    + NumOfNights : int <<get>> <<set>>
+    + Status : string <<get>> <<set>>
+    + SetFields(dto:TripDto) : void
+    + ToTripDto() : TripDto
+}
+enum TransportTypeEnum {
+    Airplane,
+    Train,
+    Bus,
+    Car,
+    Ship,
+}
+enum MealsTypeEnum {
+    Breakfast,
+    HalfBoard,
+    FullBoard,
+    AllInclusive,
+}
+enum RoomTypeEnum {
+    Single,
+    Double,
+    Twin,
+    Suite,
+}
+enum StatusEnum {
+    Available,
+    Pending,
+    Reserved,
+}
+Trip --> "Id" Guid
+Trip --> "DepartureDate" DateTime
+Trip --> "ReturnDate" DateTime
+Trip +-- TransportTypeEnum
+Trip +-- MealsTypeEnum
+Trip +-- RoomTypeEnum
+Trip +-- StatusEnum
+@enduml

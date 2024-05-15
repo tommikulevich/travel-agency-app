@@ -1,0 +1,11 @@
+@startuml
+class HotelDbContext {
+    + HotelDbContext(options:DbContextOptions<HotelDbContext>)
+}
+class "DbSet`1"<T> {
+}
+DbContext <|-- HotelDbContext
+HotelDbContext --> "Hotels<Hotel>" "DbSet`1"
+HotelDbContext --> "Rooms<Room>" "DbSet`1"
+HotelDbContext --> "RoomEvents<RoomEvent>" "DbSet`1"
+@enduml

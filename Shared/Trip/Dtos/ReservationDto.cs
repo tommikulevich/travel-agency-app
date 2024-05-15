@@ -6,12 +6,12 @@ namespace Shared.Trip.Events
     {
         public Guid OfferId {get; set;}
         public Guid ClientId { get; set; }
-        public Guid FlightId { get; set; }
+        public Guid? FlightId { get; set; }
         public Guid HotelId { get; set; }
         public string Name {get; set;}
         public string Country {get; set;}
-        public string DeparturePlace{get; set;}
-        public string ArrivalPlace {get; set;}
+        public string? DeparturePlace{get; set;}
+        public string? ArrivalPlace {get; set;}
         public int NumOfAdults {get; set;}
         public int NumOfKidsTo18 {get; set;}
         public int NumOfKidsTo10 {get; set;}

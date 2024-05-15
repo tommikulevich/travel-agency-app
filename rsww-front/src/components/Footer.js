@@ -3,7 +3,7 @@ import React from 'react';
 function Footer() {
   return (
     <footer>
-      <p>© 2024 Travel Service</p>
+      <p>Grafiki: pix4free.org</p>
     </footer>
   );
 }

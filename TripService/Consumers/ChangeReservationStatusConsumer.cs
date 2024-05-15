@@ -19,15 +19,6 @@ namespace TripService.Consumers
             var offerId = context.Message.OfferId;
             var status = context.Message.Status;
             _TripRepo.ChangeReservationStatus(offerId, status, ClientId);
-            // var TripsDto = new List<TripDto>();
-            // int i = 0;
-            // foreach(var Trip in Trips)
-            // {
-            //     var TripDto = Trip.ToTripDto();
-            //     TripsDto.Add(TripDto);
-            //     i++;
-            // }
-            // await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
 
         }
     }
