@@ -15,16 +15,19 @@ namespace ApiGateway.Controllers
 
         readonly IRequestClient<GetTripByPreferencesEvent> _GetTripsByPreferences;
         readonly IRequestClient<ReservationTripEvent> _ReservationTripEvent;
+        readonly IRequestClient<CheckReservationStatusEvent> _CheckReservationStatusEvent;
 
         public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, 
                             IRequestClient<GetAllTripsEvent> getAllTrips, 
                             IRequestClient<GetTripByPreferencesEvent> getTripsByPreferences,
-                            IRequestClient<ReservationTripEvent> ReservationTripEvent)
+                            IRequestClient<ReservationTripEvent> ReservationTripEvent,
+                            IRequestClient<CheckReservationStatusEvent> CheckReservationStatusEvent)
         {
             _getTripsClient = getTripsClient;
             _getAllTrips = getAllTrips;
             _GetTripsByPreferences = getTripsByPreferences;
             _ReservationTripEvent = ReservationTripEvent;
+            _CheckReservationStatusEvent = CheckReservationStatusEvent;
         }
 
         [HttpGet("GetTripsByUserId")]
@@ -66,8 +69,21 @@ namespace ApiGateway.Controllers
                 DiscountPercents = reservationDto.DiscountPercents,
                 NumOfNights = reservationDto.NumOfNights
             };
-            var response = await _ReservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
-            return response.Message;
+            var checkReservationResponse = await _CheckReservationStatusEvent.GetResponse<CheckReservationStatusReplyEvent>(new CheckReservationStatusEvent() {CorrelationId=reservationDto.OfferId});
+            bool isAvailable = checkReservationResponse.Message.available;
+            if (isAvailable)
+            {
+                var response = await _ReservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
+                return response.Message;
+            }
+            else
+            {
+                Console.WriteLine("Somebody just reserved your offer");
+                return new ReservationTripReplyEvent() {};
+            }
+
+            // var response = await _ReservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
+            
         }
         
         [HttpGet("GetAllTrips")]

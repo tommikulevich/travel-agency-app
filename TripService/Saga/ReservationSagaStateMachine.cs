@@ -101,7 +101,7 @@ namespace TripService.Saga
                     CorrelationId = context.Saga.CorrelationId,
                     ClientId = context.Saga.ClientId,
                     OfferId = context.Saga.OfferId,
-                    Status = "Pending"
+                    Status = "W toku"
                 }))
                 // Check if flight reserve is needed
                 .IfElse(context => context.Saga.TransportType == "Airplane",
@@ -212,7 +212,7 @@ namespace TripService.Saga
                             CorrelationId = context.Saga.CorrelationId,
                             ClientId = context.Saga.ClientId,
                             OfferId = context.Saga.OfferId,
-                            Status = "Waiting for payment"
+                            Status = "Oczekiwanie na płatność"
                         }))
                         // todo payment
                         .TransitionTo(AwaitingForPayment),
@@ -255,7 +255,7 @@ namespace TripService.Saga
                     CorrelationId = context.Saga.CorrelationId,
                     OfferId = context.Saga.OfferId,
                     ClientId = context.Saga.ClientId,
-                    Status = "Reserved"
+                    Status = "Zarezerwowana"
                 }))
                 .Finalize()
                     // Event change status reservation
@@ -269,7 +269,7 @@ namespace TripService.Saga
                     CorrelationId = context.Saga.CorrelationId,
                     ClientId = null,
                     OfferId = context.Saga.OfferId,
-                    Status = "Available"
+                    Status = "Dostępna"
                     }))
                     .IfElse(context => context.Saga.HotelReservationSuccesful,
                         context => context

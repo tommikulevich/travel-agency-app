@@ -62,6 +62,21 @@ namespace TripService.Data
             _context.SaveChanges();
         }
 
+        public bool CheckAvailability(Guid TripId)
+        {
+            var trip = _context.Trip.FirstOrDefault(p => p.Id == TripId);
+            string status = trip.Status;
+            bool result;
+            if (status == "Dostępna")
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+            return result;
+        }
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus, Guid? UserId)
         {
             // var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);

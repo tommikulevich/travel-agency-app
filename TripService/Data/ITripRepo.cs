@@ -13,6 +13,7 @@ namespace TripService.Data
                                                                         int NumOfKidsTo3);
         List<Trip> GetTripById(string id);
         void CreateTrip(Trip Trip);
+        bool CheckAvailability(Guid TripId);
         void SaveTrip(Trip Trip);
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus, Guid? UserId);
         public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
