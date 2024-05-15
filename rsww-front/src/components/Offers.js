@@ -66,6 +66,11 @@ function Offers({ offers }) {
             <p>Data wyjazdu: {offer.departureDate}</p>
             <p>Data powrotu: {offer.returnDate}</p>
             <p>Typ transportu: {offer.transportType}</p>
+            <p>Rodzaj pokoju: {offer.roomType}</p>
+            <p>Liczba dorosłych: {offer.numOfAdults}
+            &nbsp;&nbsp;&nbsp;nastolatków: {offer.numOfKidsTo18}
+            &nbsp;&nbsp;&nbsp; młodzieży: {offer.numOfKidsTo10}
+            &nbsp;&nbsp;&nbsp; dzieci: {offer.numOfKidsTo3}</p>
             <p>Cena: {offer.price}</p>
             <p>Typ posiłków: {offer.mealsType}</p>
             <p>Zniżka: {offer.discountPercents * 100}%</p>

@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react'; // Importuj useCallback
 import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { AppContext } from '../App';
 
 function ReservedOffers() {
   const [offers, setOffers] = useState([]);
   const { clientId } = useContext(AppContext);
   const navigate = useNavigate(); // Przenieś useNavigate() tutaj
+  const location = useLocation();
 
   const fetchData = useCallback(async () => { // Użyj useCallback
     console.log('UserID_ostronieofert:', clientId);
@@ -20,12 +21,24 @@ function ReservedOffers() {
     }
   }, [clientId, fetchData]); // fetchData jest teraz taka sama przy każdym renderowaniu, o ile nie zmieni się clientId
 
+  useEffect(() => {
+    fetchData(); // Odśwież dane, gdy klucz lokalizacji się zmienia
+  }, [location.key, fetchData]); // Dodaj location.key do tablicy zależności
+
+
+
   const handleBuy = async (offerId, offerPrice) => {
     try {
       const response = await axios.post(`http://localhost:8080/api/Payment/Payment?OfferId=${offerId}&&Price=${offerPrice}`);  // Zmieniamy URL na odpowiedni /Payment?OfferId=d5e60983-98e5-44a8-b9cb-9379927401b8&Price=1245
       console.log(offerId);
       console.log(response); // Wyświetlamy odpowiedź w konsoli
-      navigate('/'); // Przekieruj do strony głównej
+
+      if (response.data.result) {
+        alert("Płatność udana");
+      } else {
+        alert("Płatność odrzucona");
+      }
+      fetchData();
     } catch (error) {
       console.error(`Błąd podczas zakupu oferty ${offerId}: `, error); // Wyświetlamy błąd w konsoli
     }
