@@ -12,6 +12,7 @@ namespace TripService.Data
                                                                         int NumOfKidsTo18, int NumOfKidsTo10, 
                                                                         int NumOfKidsTo3);
         List<Trip> GetTripById(string id);
+        Trip GetTripByGuid(Guid guid);
         void CreateTrip(Trip Trip);
         bool CheckAvailability(Guid TripId);
         void SaveTrip(Trip Trip);

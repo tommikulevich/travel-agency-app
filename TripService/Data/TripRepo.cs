@@ -56,6 +56,11 @@ namespace TripService.Data
             return _context.Trip.Where(p => p.ClientId == guid).ToList();
         }
 
+        public Trip GetTripByGuid(Guid guid)
+        {
+            return _context.Trip.FirstOrDefault(t => t.Id == guid);
+        }
+
         public void SaveTrip(Trip Trip)
         {
             _context.Trip.Add(Trip);

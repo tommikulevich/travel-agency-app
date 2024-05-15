@@ -48,6 +48,11 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
+    cfg.AddConsumer<UnchangeRoomsAvailabilityStatusConsumer>(context =>
+{
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
     cfg.AddConsumer<CheckReservationStatusConsumer>(context =>
     {
         context.UseMessageRetry(r => r.Interval(3, 1000));

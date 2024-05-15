@@ -21,11 +21,6 @@ namespace HotelService.Consumers {
 
             if (!roomEvents.Any()) {
                 Console.WriteLine("No active reservations found to unreserve.");
-                // await context.Publish(new UnreserveRoomReplyEvent {
-                //     Id = Guid.NewGuid(), // We can replace with context.Message.Id if necessary
-                //     CorrelationId = context.Message.CorrelationId,
-                //     Success = false
-                // });
                 return;
             }
             
@@ -34,18 +29,13 @@ namespace HotelService.Consumers {
             try {
                 _context.SaveChanges();
                 Console.WriteLine($"Unreservation successful for Client ID: {context.Message.ClientId}");
-                // await context.RespondAsync(new UnreserveRoomReplyEvent {
-                //     Id = Guid.NewGuid(), // We can replace with context.Message.Id if necessary
-                //     CorrelationId = context.Message.CorrelationId,
-                //     Success = true
-                // });
+                
+                await context.RespondAsync(new RoomsAvailabilityAfterUnreservationEvent {
+                    Id = Guid.NewGuid(), 
+                    CorrelationId = context.Message.CorrelationId
+                });
             } catch (Exception e) {
                 Console.WriteLine($"Unreservation failed due to an error: {e.Message}");
-                // await context.RespondAsync(new UnreserveRoomReplyEvent {
-                //     Id = Guid.NewGuid(), 
-                //     CorrelationId = context.Message.CorrelationId,
-                //     Success = false
-                // });
             }
         }
     }
