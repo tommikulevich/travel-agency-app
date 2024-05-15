@@ -21,6 +21,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
+      DATABASE_CONNECTION_STRING: "Host=host.docker.internal;Port=5432;Database=userdb;Username=postgres;Password=guest;"
       RABBITMQ_HOST: rabbitmq
       RABBITMQ_PORT: 5672
     networks:

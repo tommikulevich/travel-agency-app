@@ -1,4 +1,6 @@
+using ApiGateway.Data;
 using MassTransit;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +20,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<UserDbContext>(options =>
+    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
+builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 builder.Services.AddMassTransit(cfg =>
 {
