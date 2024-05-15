@@ -13,7 +13,6 @@ namespace ApiGateway.Data
         public List<User> GetAllUsers()
         {
             var result = _context.User.ToList();
-            Console.WriteLine("Jebac " + result[0].UserName);
             return result;
         }
 
