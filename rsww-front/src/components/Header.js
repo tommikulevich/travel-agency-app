@@ -30,7 +30,10 @@ function Header({ onTitleClick }) {
         {/* <span className="separator"></span>
         <Link to="/register" className="button">Rejestracja</Link> */}
         <span className="separator"></span>
-        <Link to="/user-offers" className="button">Podgląd Twoich ofert</Link>
+        {clientId && (
+  <Link to="/user-offers" className="button">Podgląd Twoich ofert</Link>
+)}
+
       </div>
     </header>
   );
