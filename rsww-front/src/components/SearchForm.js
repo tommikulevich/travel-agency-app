@@ -10,14 +10,14 @@ axios.interceptors.request.use(request => {
 });
 
 function SearchForm({ onSearch }) {
-  const [destination, setDestination] = useState('Cypr'); // Initialize with 'Cypr'
-  const today = new Date().toISOString().split('T')[0];
-  const [departureDate, setDepartureDate] = useState(today);
+  const [destination, setDestination] = useState('Grecja'); // Initialize with 'Cypr'
+  const day = '2024-06-07';
+  const [departureDate, setDepartureDate] = useState(day);
   const [departurePlace, setDeparturePlace] = useState('Gdańsk (GDN)'); // Initialize with 'Gdańsk (GDN)'
   const [numOfAdults, setNumOfAdults] = useState(1);
   const [numOfKidsTo18, setNumOfKidsTo18] = useState(1);
-  const [numOfKidsTo10, setNumOfKidsTo10] = useState(1);
-  const [numOfKidsTo3, setNumOfKidsTo3] = useState(0);
+  const [numOfKidsTo10, setNumOfKidsTo10] = useState(0);
+  const [numOfKidsTo3, setNumOfKidsTo3] = useState(1);
 
   const handleSubmit = async event => {
     event.preventDefault();
