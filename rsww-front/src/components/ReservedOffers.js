@@ -46,11 +46,17 @@ function ReservedOffers() {
       console.error(`Błąd podczas zakupu oferty ${offerId}: `, error); // Wyświetlamy błąd w konsoli
     }
   };
+  const [buttonClicked, setButtonClicked] = useState(false);
+
+  const handleClick = (id, price) => {
+    handleBuy(id, price);
+    setButtonClicked(true);
+  };
 
   return (
     <div className="reserved-offers" style={{ maxHeight: '700px', overflowY: 'scroll' }}>
       <h2>Twoje zarezerwowane oferty</h2>
-      <p>ID klienta: {clientId}</p> {/* Dodaj tę linię */}
+      <p>ID klienta: {clientId}</p>
       {offers.map((offer, index) => (
         <div key={index} className="offer-card">
           <h2>{offer.name}</h2>
@@ -64,8 +70,10 @@ function ReservedOffers() {
           <p>Cena: {offer.price}</p>
           <p>Typ posiłków: {offer.mealsType}</p>
           <p>Zniżka: {offer.discountPercents * 100}%</p>
-          {offer.status == 'Oczekiwanie na płatność' && <button onClick={() => handleBuy(offer.id, offer.price)}>Zapłać</button>} {/* Dodaj warunek do renderowania przycisku */}
-        <p>Status: {offer.status}</p>
+         {offer.status == 'Oczekiwanie na płatność' && !buttonClicked ? (
+  <button onClick={() => handleClick(offer.id, offer.price)}>Zapłać</button>
+) : null}
+<p>Status: {offer.status}</p>
         </div>
       ))}
     </div>

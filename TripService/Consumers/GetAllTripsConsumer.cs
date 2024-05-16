@@ -23,7 +23,6 @@ namespace TripService.Consumers
             }
             await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
             // Fetch reservations from the database
-            Console.WriteLine("Jestem all");
 
         }
     }

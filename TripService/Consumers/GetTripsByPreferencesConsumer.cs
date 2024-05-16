@@ -15,7 +15,6 @@ namespace TripService.Consumers
         }
         public async Task Consume(ConsumeContext<GetTripByPreferencesEvent> context)
         {
-            Console.WriteLine("Jestem preferencje");
             var Destination = context.Message.Destination;
             var DepartureDate = context.Message.DepartureDate;
             var DeparturePlace = context.Message.DeparturePlace;

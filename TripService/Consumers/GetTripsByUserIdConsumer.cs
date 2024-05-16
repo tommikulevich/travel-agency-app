@@ -24,7 +24,6 @@ namespace TripService.Consumers
             }
             await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
 
-            Console.WriteLine("Jestem client");
 
         }
     }
