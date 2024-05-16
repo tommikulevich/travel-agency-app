@@ -5,6 +5,16 @@ using HotelService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
+        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
+
+        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
+        {
+            throw new InvalidOperationException("Invalid port number in configuration");
+        }
+
+
 builder.Services.AddMassTransit(x => {
     x.AddConsumer<AvailableRoomsConsumer>();
     x.AddConsumer<ReserveRoomEventConsumer>(context =>
@@ -18,16 +28,15 @@ builder.Services.AddMassTransit(x => {
         context.UseInMemoryOutbox();
     });
     x.AddDelayedMessageScheduler();
-    x.UsingRabbitMq((context, cfg) => {
-        cfg.Host("rabbitmq", "/", h => {
+    x.UsingRabbitMq((context, rabbitCfg) =>
+    {
+rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
+        {
             h.Username("guest");
             h.Password("guest");
         });
-        cfg.UseDelayedMessageScheduler();
-        cfg.ConfigureEndpoints(context);
-        // cfg.ReceiveEndpoint("hotel-queue", e => {
-        //     e.ConfigureConsumer<AvailableRoomsConsumer>(context);
-        // });
+        rabbitCfg.UseDelayedMessageScheduler();
+        rabbitCfg.ConfigureEndpoints(context);
     });
     
 });

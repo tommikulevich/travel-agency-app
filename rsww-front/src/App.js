@@ -15,10 +15,12 @@ function App() {
   const [offers, setOffers] = useState([]);
   const [clientId, setClientId] = useState(null); // Dodaj to, jeśli nie masz już clientId
 
+  const reactAppHost = process.env.REACT_APP_HOST;
+  const reactAppPort = process.env.REACT_APP_PORT;
   
 
   const fetchData = async () => {
-    const result = await axios('http://localhost:8080/api/Trip/GetAllTrips');
+    const result = await axios(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetAllTrips`);
     setOffers(result.data);
   };
 
@@ -27,7 +29,7 @@ function App() {
   }, []);
 
   const handleSearch = async (searchParams) => {
-    const result = await axios.get('http://localhost:8080/api/Trip/GetTripsByPreferences', {
+    const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetTripsByPreferences`, {
       params: searchParams,
     });
 

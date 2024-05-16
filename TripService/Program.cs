@@ -15,6 +15,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
 builder.Services.AddScoped<ITripRepo, TripRepo>();
+
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
+        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
+
+        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
+        {
+            throw new InvalidOperationException("Invalid port number in configuration");
+        }
+
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.AddConsumer<GetAllTripsConsumer>(context =>
@@ -72,7 +81,7 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
-        rabbitCfg.Host("rabbitmq", "/", h =>
+rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         {
             h.Username("guest");
             h.Password("guest");

@@ -9,9 +9,12 @@ function ReservedOffers() {
   const navigate = useNavigate(); // Przenieś useNavigate() tutaj
   const location = useLocation();
 
+  const reactAppHost = process.env.REACT_APP_HOST;
+  const reactAppPort = process.env.REACT_APP_PORT;
+
   const fetchData = useCallback(async () => { // Użyj useCallback
     console.log('UserID_ostronieofert:', clientId);
-    const result = await axios.get(`http://localhost:8080/api/Trip/GetTripsByUserId?ClientId=${clientId}`);
+    const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetTripsByUserId?ClientId=${clientId}`);
     setOffers(result.data);
   }, [clientId]); // Dodaj clientId do tablicy zależności useCallback
 
@@ -29,7 +32,7 @@ function ReservedOffers() {
 
   const handleBuy = async (offerId, offerPrice) => {
     try {
-      const response = await axios.post(`http://localhost:8080/api/Payment/Payment?OfferId=${offerId}&&Price=${offerPrice}`);  // Zmieniamy URL na odpowiedni /Payment?OfferId=d5e60983-98e5-44a8-b9cb-9379927401b8&Price=1245
+      const response = await axios.post(`http://${reactAppHost}:${reactAppPort}/api/Payment/Payment?OfferId=${offerId}&&Price=${offerPrice}`);  // Zmieniamy URL na odpowiedni /Payment?OfferId=d5e60983-98e5-44a8-b9cb-9379927401b8&Price=1245
       console.log(offerId);
       console.log(response); // Wyświetlamy odpowiedź w konsoli
 

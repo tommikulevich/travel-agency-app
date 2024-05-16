@@ -7,8 +7,8 @@ services:
     hostname: 'rabbitmq'
     container_name: 'rabbitmq' 
     ports: 
-        - 5672:5672   # normal communication
-        - 15672:15672 # web interface
+        - 18439:5672   # normal communication
+        - 18444:15672 # web interface
     networks:
       - backend # connected networks
 
@@ -17,12 +17,12 @@ services:
       context: .
       dockerfile: ./ApiGateway/Dockerfile
     ports:
-      - "8080:8080"
+      - "18454:8080"
     depends_on:
       - rabbitmq
     environment:
       DATABASE_CONNECTION_STRING: "Host=host.docker.internal;Port=5432;Database=userdb;Username=postgres;Password=guest;"
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
@@ -35,7 +35,7 @@ services:
       - rabbitmq
     environment:
       DATABASE_CONNECTION_STRING: "Host=host.docker.internal;Port=5432;Database=tripdb;Username=postgres;Password=guest;"
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
@@ -48,7 +48,7 @@ services:
       - rabbitmq
     environment:
       DATABASE_CONNECTION_STRING: "Host=host.docker.internal;Port=5432;Database=flightdb;Username=postgres;Password=guest;"
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
@@ -61,7 +61,7 @@ services:
       - rabbitmq
     environment:
       DATABASE_CONNECTION_STRING: "Host=host.docker.internal;Port=5432;Database=hoteldb;Username=postgres;Password=guest;"
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
@@ -73,7 +73,7 @@ services:
     depends_on:
       - rabbitmq
     environment:
-      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
       - backend # connected networks
@@ -84,8 +84,11 @@ services:
       dockerfile: ./rsww-front/Dockerfile
     depends_on:
       - apigateway
+    environment:
+      REACT_APP_HOST: 'localhost'
+      REACT_APP_PORT: 18454
     ports:
-      - 3000:3000
+      - 18772:3000
     networks:
       - backend
 

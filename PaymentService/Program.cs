@@ -5,6 +5,15 @@ using Shared.Payment.Events;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
+        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
+
+        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
+        {
+            throw new InvalidOperationException("Invalid port number in configuration");
+        }
+
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.AddConsumer<ProcessPaymentEvent>(context =>
@@ -15,7 +24,7 @@ builder.Services.AddMassTransit(cfg =>
     cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
-        rabbitCfg.Host("rabbitmq", "/", h =>
+rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         {
             h.Username("guest");
             h.Password("guest");

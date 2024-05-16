@@ -11,6 +11,8 @@ function Offers({ offers }) {
   const toggleShowAllFeatures = () => {
     setShowAllFeatures(!showAllFeatures);
   };
+  const reactAppHost = process.env.REACT_APP_HOST;
+  const reactAppPort = process.env.REACT_APP_PORT;
 
   const handleReserve = async (offer) => {
     const reservationDto = {
@@ -40,7 +42,7 @@ function Offers({ offers }) {
     };
   
     try {
-      const response = await axios.post('http://localhost:8080/api/Trip/ReserveTrip', reservationDto);
+      const response = await axios.post(`http://${reactAppHost}:${reactAppPort}/api/Trip/ReserveTrip`, reservationDto);
       console.log(response.data);
       navigate('/user-offers'); // Przekieruj użytkownika do '/user-offers'
     } catch (error) {
