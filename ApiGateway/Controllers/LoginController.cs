@@ -41,7 +41,7 @@ namespace ApiGateway.Controllers
             }
             else
             {
-                return NotFound();
+                return Ok(new { UserId = "0" });
             }
         }
 

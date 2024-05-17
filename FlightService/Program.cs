@@ -47,14 +47,14 @@ rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
     });
 });
 var app = builder.Build();
-using (var contScope = app.Services.CreateScope())
-using (var context = contScope.ServiceProvider.GetRequiredService<FlightContext>())
-{
-    // Ensure Deleted possible to use for testing
-    context.Database.EnsureCreated();
-    context.SaveChanges(); // save to DB
-    Console.WriteLine("Done clearing database");
-}
+// using (var contScope = app.Services.CreateScope())
+// using (var context = contScope.ServiceProvider.GetRequiredService<FlightContext>())
+// {
+//     // Ensure Deleted possible to use for testing
+//     context.Database.EnsureCreated();
+//     context.SaveChanges(); // save to DB
+//     Console.WriteLine("Done clearing database");
+// }
 app.Run();
 
 

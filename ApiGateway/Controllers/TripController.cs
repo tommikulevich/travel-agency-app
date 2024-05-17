@@ -96,7 +96,7 @@ namespace ApiGateway.Controllers
             return Trips;
         }
 
-        [HttpGet("GetTripsByPreferences")]
+[HttpGet("GetTripsByPreferences")]
         public async Task<IEnumerable<TripDto>> GetTripsByPreferences(string Destination, DateTime DepartureDate, 
                                                                 string DeparturePlace, int NumOfAdults, 
                                                                 int NumOfKidsTo18, int NumOfKidsTo10, 
