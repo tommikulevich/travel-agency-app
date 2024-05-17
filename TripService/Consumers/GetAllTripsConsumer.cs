@@ -7,24 +7,28 @@ namespace TripService.Consumers
 {
     public class GetAllTripsConsumer : IConsumer<GetAllTripsEvent>
     {
-        private readonly ITripRepo _TripRepo;
-        public GetAllTripsConsumer(ITripRepo TripRepo)
+        private readonly ITripRepo _tripRepo;
+
+        public GetAllTripsConsumer(ITripRepo tripRepo)
         {
-            _TripRepo = TripRepo;
+            _tripRepo = tripRepo;
         }
+
         public async Task Consume(ConsumeContext<GetAllTripsEvent> context)
         {
-            var Trips = _TripRepo.GetAllTrips();
+            var Trips = _tripRepo.GetAllTrips();
             var TripsDto = new List<TripDto>();
             foreach(var Trip in Trips)
             {
                 var TripDto = Trip.ToTripDto();
                 TripsDto.Add(TripDto);
             }
-            await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
-            // Fetch reservations from the database
 
+            await context.RespondAsync<ReplyTripsDtosEvent>(
+                new ReplyTripsDtosEvent() { 
+                    CorrelationId = context.Message.CorrelationId, 
+                    Trips = TripsDto
+            });
         }
     }
-
 }

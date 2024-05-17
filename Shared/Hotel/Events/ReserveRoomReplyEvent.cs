@@ -1,5 +1,3 @@
-using Shared.Trip.Events;
-
 namespace Shared.Hotel.Events {
     public class ReserveRoomReplyEvent {
         public Guid Id  { get; set; }

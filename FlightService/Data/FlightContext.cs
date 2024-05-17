@@ -11,12 +11,5 @@ namespace FlightService.Data
 
         public DbSet<FlightEntity> Flight {get;set;}
         public DbSet<FlightSeatEvent> FlightEvent { get; set; }
-
-        // protected override void OnModelCreating(ModelBuilder modelBuilder)
-        // {
-        //     modelBuilder.Entity<FlightEntity>().ToTable("Flight");
-        // }
-
     }
-
 }

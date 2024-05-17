@@ -8,7 +8,14 @@ namespace TripService.Data
         {
             using( var serviceScope = app.ApplicationServices.CreateScope())
             {
-                SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>());
+                var context = serviceScope.ServiceProvider.GetService<AppDbContext>();
+        
+                if (context == null)
+                {
+                    throw new ArgumentNullException(nameof(context), "AppDbContext service not found.");
+                }
+                
+                SeedData(context);
             }
         }
 
@@ -92,7 +99,6 @@ namespace TripService.Data
                 );
 
                 context.SaveChanges();
-                
             }
             else 
             {

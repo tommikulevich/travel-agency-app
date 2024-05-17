@@ -1,7 +1,0 @@
-@startuml
-class GetTripsByUserIdEvent {
-    + ClientId : string <<get>> <<set>>
-}
-GetTripsByUserIdEvent --> "Id" Guid
-GetTripsByUserIdEvent --> "CorrelationId" Guid
-@enduml

@@ -1,8 +1,0 @@
-@startuml
-class CreateTripEvent {
-}
-CreateTripEvent --> "Id" Guid
-CreateTripEvent --> "CorrelationId" Guid
-CreateTripEvent --> "TripId" Guid
-CreateTripEvent --> "OfferId" Guid
-@enduml

@@ -2,17 +2,18 @@ using MassTransit;
 using TripService.Data;
 using Shared.Trip.Events;
 using Shared.Trip.Dtos;
-using MassTransit.Serialization;
 
 namespace TripService.Consumers
 {
     public class GetTripsByPreferencesConsumer : IConsumer<GetTripByPreferencesEvent>
     {
-        private readonly ITripRepo _TripRepo;
-        public GetTripsByPreferencesConsumer(ITripRepo TripRepo)
+        private readonly ITripRepo _tripRepo;
+
+        public GetTripsByPreferencesConsumer(ITripRepo tripRepo)
         {
-            _TripRepo = TripRepo;
+            _tripRepo = tripRepo;
         }
+
         public async Task Consume(ConsumeContext<GetTripByPreferencesEvent> context)
         {
             var Destination = context.Message.Destination;
@@ -22,19 +23,24 @@ namespace TripService.Consumers
             var NumOfKidsTo18 = context.Message.NumOfKidsTo18;
             var NumOfKidsTo10 = context.Message.NumOfKidsTo10;
             var NumOfKidsTo3 = context.Message.NumOfKidsTo3;
-            var Trips = _TripRepo.GetTripsByPreferences(Destination, DepartureDate, 
+
+            var Trips = _tripRepo.GetTripsByPreferences(Destination, DepartureDate, 
                                                         DeparturePlace, NumOfAdults, 
                                                         NumOfKidsTo18, NumOfKidsTo10, 
                                                         NumOfKidsTo3);
+
             var TripsDto = new List<TripDto>();
             foreach(var Trip in Trips)
             {
                 var TripDto = Trip.ToTripDto();
                 TripsDto.Add(TripDto);
             }
-            await context.RespondAsync<ReplyTripsDtosEvent>(new ReplyTripsDtosEvent() { CorrelationId = context.Message.CorrelationId, Trips = TripsDto});
 
+            await context.RespondAsync<ReplyTripsDtosEvent>(
+                new ReplyTripsDtosEvent() { 
+                    CorrelationId = context.Message.CorrelationId, 
+                    Trips = TripsDto
+            });
         }
     }
-
 }

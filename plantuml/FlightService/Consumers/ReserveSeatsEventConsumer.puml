@@ -1,9 +1,0 @@
-@startuml
-class ReserveSeatsEventConsumer {
-    + ReserveSeatsEventConsumer(flightService:IFlightRepo)
-    + <<async>> Consume(context:ConsumeContext<ReserveSeatsEvent>) : Task
-}
-class "IConsumer`1"<T> {
-}
-"IConsumer`1" "<ReserveSeatsEvent>" <|-- ReserveSeatsEventConsumer
-@enduml

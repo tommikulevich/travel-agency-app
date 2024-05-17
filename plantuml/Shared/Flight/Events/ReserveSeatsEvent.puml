@@ -1,8 +1,0 @@
-@startuml
-class ReserveSeatsEvent {
-    + Seats : int <<get>> <<set>>
-    + ReserveSeatsEvent(flightId:Guid, seats:int)
-}
-ReserveSeatsEvent --> "CorrelationId" Guid
-ReserveSeatsEvent --> "FlightId" Guid
-@enduml

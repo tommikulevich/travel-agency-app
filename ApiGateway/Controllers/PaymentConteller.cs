@@ -1,9 +1,6 @@
-using ApiGateway.Models;
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Payment.Events;
-using Shared.Trip.Dtos;
-using Shared.Trip.Events;
 
 namespace ApiGateway.Controllers
 {
@@ -11,20 +8,24 @@ namespace ApiGateway.Controllers
     [Route("api/[controller]")]
     public class PaymentController : ControllerBase
     {
-        readonly IRequestClient<ProcessPaymentFromCustomerEvent> _ProcessPaymentFromCustomerEvent;
+        readonly IRequestClient<ProcessPaymentFromCustomerEvent> _processPaymentFromCustomerEvent;
 
-        public PaymentController(IRequestClient<ProcessPaymentFromCustomerEvent> ProcessPaymentFromCustomerEvent)
+        public PaymentController(IRequestClient<ProcessPaymentFromCustomerEvent> processPaymentFromCustomerEvent)
         {
-            _ProcessPaymentFromCustomerEvent = ProcessPaymentFromCustomerEvent;
+            _processPaymentFromCustomerEvent = processPaymentFromCustomerEvent;
         }
+
         [HttpPost]
         [Route("Payment")]
-        public async Task<ProcessPaymentCustomerReplyEvent> Payment(Guid OfferId, double Price)
+        public async Task<ProcessPaymentCustomerReplyEvent> Payment(Guid offerId, double price)
         {
-            var response = await _ProcessPaymentFromCustomerEvent.GetResponse<ProcessPaymentCustomerReplyEvent>(new ProcessPaymentFromCustomerEvent() { CorrelationId = OfferId, Price = Price});
+            var response = await _processPaymentFromCustomerEvent.GetResponse<ProcessPaymentCustomerReplyEvent>(
+                new ProcessPaymentFromCustomerEvent 
+                { 
+                    CorrelationId = offerId, 
+                    Price = price 
+                });
             return response.Message;
         }
-
     }
-
 }

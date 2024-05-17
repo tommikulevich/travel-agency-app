@@ -2,15 +2,19 @@ using MassTransit;
 using HotelService.Data;
 using Shared.Hotel.Events;
 
-namespace HotelService.Consumers {
-    public class UnreserveRoomEventConsumer : IConsumer<UnreserveRoomEvent> {
+namespace HotelService.Consumers 
+{
+    public class UnreserveRoomEventConsumer : IConsumer<UnreserveRoomEvent> 
+    {
         private readonly HotelDbContext _context;
 
-        public UnreserveRoomEventConsumer(HotelDbContext context) {
+        public UnreserveRoomEventConsumer(HotelDbContext context) 
+        {
             _context = context;
         }
 
-        public async Task Consume(ConsumeContext<UnreserveRoomEvent> context) {
+        public async Task Consume(ConsumeContext<UnreserveRoomEvent> context) 
+        {
             Console.WriteLine($"Received unreservation request for Client ID: {context.Message.ClientId}");
 
             var roomEvents = _context.RoomEvent.Where(
@@ -19,14 +23,16 @@ namespace HotelService.Consumers {
                       re.EndDate == context.Message.ReturnDate.ToUniversalTime() &&
                       re.Status == "Reserved").ToList();
 
-            if (!roomEvents.Any()) {
+            if (!roomEvents.Any()) 
+            {
                 Console.WriteLine("No active reservations found to unreserve.");
                 return;
             }
             
             _context.RoomEvent.RemoveRange(roomEvents);
 
-            try {
+            try 
+            {
                 _context.SaveChanges();
                 Console.WriteLine($"Unreservation successful for Client ID: {context.Message.ClientId}");
                 
@@ -34,7 +40,9 @@ namespace HotelService.Consumers {
                     Id = Guid.NewGuid(), 
                     CorrelationId = context.Message.CorrelationId
                 });
-            } catch (Exception e) {
+            } 
+            catch (Exception e) 
+            {
                 Console.WriteLine($"Unreservation failed due to an error: {e.Message}");
             }
         }

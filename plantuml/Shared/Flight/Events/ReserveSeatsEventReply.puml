@@ -1,9 +1,0 @@
-@startuml
-class ReserveSeatsEventReply {
-    + Success : bool <<get>> <<set>>
-    + Message : string <<get>> <<set>>
-    + ReserveSeatsEventReply(flightId:Guid, success:bool, message:string)
-}
-ReserveSeatsEventReply --> "CorrelationId" Guid
-ReserveSeatsEventReply --> "FlightId" Guid
-@enduml

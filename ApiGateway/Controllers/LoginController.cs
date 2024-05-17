@@ -1,9 +1,6 @@
+using Microsoft.AspNetCore.Mvc;
 using ApiGateway.Data;
 using ApiGateway.Models;
-using MassTransit;
-using Microsoft.AspNetCore.Mvc;
-using Shared.Trip.Dtos;
-using Shared.Trip.Events;
 
 namespace ApiGateway.Controllers
 {
@@ -11,23 +8,24 @@ namespace ApiGateway.Controllers
     [Route("api/[controller]")]
     public class LoginController : ControllerBase
     {
-
         private readonly IUserRepo _userRepo;
-        public LoginController(IUserRepo UserRepo)
+
+        public LoginController(IUserRepo userRepo)
         {
-            _userRepo = UserRepo;
+            _userRepo = userRepo;
         }
+
         [HttpPost]
         [Route("Auth")]
-        public IActionResult Auth(string UserName, string Password)
+        public IActionResult Auth(string userName, string password)
         {
             var valid = false;
-
             Guid found = Guid.Parse("00000000-0000-0000-0000-000000000000");
+            
             List<User> users = _userRepo.GetAllUsers();  
             foreach(var user in users)
             {
-                if(user.Password == Password && user.UserName == UserName)
+                if(user.Password == password && user.UserName == userName)
                 {
                     valid = true;
                     found = user.Id;
@@ -44,7 +42,5 @@ namespace ApiGateway.Controllers
                 return Ok(new { UserId = "0" });
             }
         }
-
     }
-
 }

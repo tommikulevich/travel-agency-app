@@ -1,17 +1,16 @@
-using System;
-
 namespace Shared.Flight.Events
 {
     public class GetAvailableFlightsEvent
     {
-        public Guid CorrelationId  { get; set; }
-        public string DeparturePlace { get; set; }
-        public string ArrivalPlace { get; set; }
+        public Guid CorrelationId { get; set; }
+        public string DeparturePlace { get; set; } = string.Empty;
+        public string ArrivalPlace { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         public int FreeSeats { get; set; }
 
-        public GetAvailableFlightsEvent(string departurePlace, string arrivalPlace, DateTime departureTime, DateTime arrivalTime, int freeSeats)
+        public GetAvailableFlightsEvent(string departurePlace, string arrivalPlace, 
+                DateTime departureTime, DateTime arrivalTime, int freeSeats)
         {
             DeparturePlace = departurePlace;
             ArrivalPlace = arrivalPlace;

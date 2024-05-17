@@ -1,16 +1,20 @@
 using MassTransit;
-using Shared.Hotel.Events;
 using HotelService.Data;
+using Shared.Hotel.Events;
 
-namespace HotelService.Consumers {
-    public class AvailableRoomsConsumer : IConsumer<AvailableRoomsRequest> {
+namespace HotelService.Consumers 
+{
+    public class AvailableRoomsConsumer : IConsumer<AvailableRoomsRequest> 
+    {
         private readonly IHotelRepo _hotelRepo;
 
-        public AvailableRoomsConsumer(IHotelRepo hotelRepo) {
+        public AvailableRoomsConsumer(IHotelRepo hotelRepo) 
+        {
             _hotelRepo = hotelRepo;
         }
 
-        public async Task Consume(ConsumeContext<AvailableRoomsRequest> context) {
+        public async Task Consume(ConsumeContext<AvailableRoomsRequest> context) 
+        {
             var hotels = _hotelRepo.GetAvailableHotels(context.Message);
             await context.RespondAsync(new { Hotels = hotels });
         }

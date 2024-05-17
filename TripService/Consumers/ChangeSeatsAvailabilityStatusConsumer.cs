@@ -6,11 +6,11 @@ namespace TripService.Consumers
 {
     public class ChangeSeatsAvailabilityStatusConsumer : IConsumer<SeatsAvailabilityAfterReservationEvent>
     {
-        private readonly ITripRepo _TripRepo;
+        private readonly ITripRepo _tripRepo;
 
-        public ChangeSeatsAvailabilityStatusConsumer(ITripRepo TripRepo)
+        public ChangeSeatsAvailabilityStatusConsumer(ITripRepo tripRepo)
         {
-            _TripRepo = TripRepo;
+            _tripRepo = tripRepo;
         }
 
         public async Task Consume(ConsumeContext<SeatsAvailabilityAfterReservationEvent> context)
@@ -18,18 +18,20 @@ namespace TripService.Consumers
             Guid? flightId = context.Message.FlightId;
             int numOfFreeSeats = context.Message.NumOfFreeSeats;
 
-            var Trips = _TripRepo.GetTripsByFlightId(flightId);
+            var Trips = _tripRepo.GetTripsByFlightId(flightId);
             foreach(var Trip in Trips)
             {
                 if ( (Trip.NumOfAdults + Trip.NumOfKidsTo18 + Trip.NumOfKidsTo10) > numOfFreeSeats ) 
                 {
-                    _TripRepo.ChangeReservationStatus(Trip.Id, "Lack of flight seats", null);
+                    _tripRepo.ChangeReservationStatus(Trip.Id, "Lack of flight seats", null);
                 } 
                 else if ( Trip.Status == "Lack of flight seats" )  
                 {
-                    _TripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
+                    _tripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
                 }
             }
+
+            await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning
         }
     }
 }

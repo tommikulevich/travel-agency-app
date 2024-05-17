@@ -6,17 +6,17 @@ namespace TripService.Consumers
 {
     public class UnchangeRoomsAvailabilityStatusConsumer : IConsumer<RoomsAvailabilityAfterUnreservationEvent>
     {
-        private readonly ITripRepo _TripRepo;
+        private readonly ITripRepo _tripRepo;
 
-        public UnchangeRoomsAvailabilityStatusConsumer(ITripRepo TripRepo)
+        public UnchangeRoomsAvailabilityStatusConsumer(ITripRepo tripRepo)
         {
-            _TripRepo = TripRepo;
+            _tripRepo = tripRepo;
         }
 
         public async Task Consume(ConsumeContext<RoomsAvailabilityAfterUnreservationEvent> context)
-        {
-            var unreservedTrip = _TripRepo.GetTripByGuid(context.Message.CorrelationId);
-            var Trips = _TripRepo.GetTripsBySpecificRoomConfiguration(
+        {            
+            var unreservedTrip = _tripRepo.GetTripByGuid(context.Message.CorrelationId);
+            var Trips = _tripRepo.GetTripsBySpecificRoomConfiguration(
                 unreservedTrip.HotelId,
                 unreservedTrip.NumOfAdults,
                 unreservedTrip.NumOfKidsTo18,
@@ -31,9 +31,11 @@ namespace TripService.Consumers
             {
                 if ( Trip.Status == "Lack of flight seats" ) 
                 {
-                    _TripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
+                    _tripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
                 }
             }
+
+            await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning
         }
     }
 }

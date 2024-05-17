@@ -1,9 +1,0 @@
-@startuml
-class GetAllTripsConsumer {
-    + GetAllTripsConsumer(TripRepo:ITripRepo)
-    + <<async>> Consume(context:ConsumeContext<GetAllTripsEvent>) : Task
-}
-class "IConsumer`1"<T> {
-}
-"IConsumer`1" "<GetAllTripsEvent>" <|-- GetAllTripsConsumer
-@enduml

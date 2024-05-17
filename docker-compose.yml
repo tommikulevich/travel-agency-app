@@ -2,22 +2,32 @@ version: '3.8'
 
 services:
 
-  rabbitmq: # broker service from default image https://hub.docker.com/_/rabbitmq
+  rabbitmq:
     image: heidiks/rabbitmq-delayed-message-exchange:latest 
     hostname: 'rabbitmq'
     container_name: 'rabbitmq' 
     ports: 
-        - 18439:5672   # normal communication
-        - 18444:15672 # web interface
+        - 18439:5672  
+        - 18444:15672 
     networks:
-      - backend # connected networks
+      - backend 
+
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "18772:80"
+    depends_on:
+      - frontend
+      - apigateway
+    networks:
+      - backend
 
   apigateway:
     build:
       context: .
       dockerfile: ./ApiGateway/Dockerfile
-    ports:
-      - "18454:8080"
     depends_on:
       - rabbitmq
     environment:
@@ -25,7 +35,7 @@ services:
       RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
-      - backend # connected networks
+      - backend
 
   tripservice:
     build:
@@ -38,7 +48,7 @@ services:
       RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
-      - backend # connected networks
+      - backend
 
   flightservice:
     build:
@@ -51,7 +61,7 @@ services:
       RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
-      - backend # connected networks
+      - backend 
 
   hotelservice:
     build:
@@ -64,7 +74,7 @@ services:
       RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
-      - backend # connected networks
+      - backend 
 
   paymentservice:
     build:
@@ -76,22 +86,20 @@ services:
       RABBITMQ_HOST: 'rabbitmq'
       RABBITMQ_PORT: 5672
     networks:
-      - backend # connected networks
+      - backend
   
   frontend:
     build:
       context: .
-      dockerfile: ./rsww-front/Dockerfile
+      dockerfile: ./Frontend/Dockerfile
     depends_on:
       - apigateway
     environment:
       REACT_APP_HOST: 'localhost'
-      REACT_APP_PORT: 18454
-    ports:
-      - 18772:3000
+      REACT_APP_PORT: 18772
     networks:
       - backend
 
 networks:
   frontend: {}
-  backend: {} # network for the rest of communication
+  backend: {} 

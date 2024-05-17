@@ -4,9 +4,6 @@ namespace Shared.Trip.Events
     {
         public Guid Id { get; set; }
         public Guid CorrelationId  { get; set; }
-
-        public string ClientId { get; set; }
-
+        public string ClientId { get; set; } = string.Empty;
     }
-
 }
