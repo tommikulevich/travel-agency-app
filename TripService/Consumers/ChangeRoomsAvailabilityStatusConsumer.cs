@@ -6,16 +6,16 @@ namespace TripService.Consumers
 {
     public class ChangeRoomsAvailabilityStatusConsumer : IConsumer<RoomsAvailabilityAfterReservationEvent>
     {
-        private readonly ITripRepo _TripRepo;
+        private readonly ITripRepo _tripRepo;
 
-        public ChangeRoomsAvailabilityStatusConsumer(ITripRepo TripRepo)
+        public ChangeRoomsAvailabilityStatusConsumer(ITripRepo tripRepo)
         {
-            _TripRepo = TripRepo;
+            _tripRepo = tripRepo;
         }
 
         public async Task Consume(ConsumeContext<RoomsAvailabilityAfterReservationEvent> context)
         {
-            var Trips = _TripRepo.GetTripsBySpecificRoomConfiguration(
+            var Trips = _tripRepo.GetTripsBySpecificRoomConfiguration(
                 context.Message.HotelId,
                 context.Message.NumOfAdults,
                 context.Message.NumOfKidsTo18,
@@ -28,8 +28,10 @@ namespace TripService.Consumers
 
             foreach(var Trip in Trips)
             {
-                _TripRepo.ChangeReservationStatus(Trip.Id, "Lack of rooms", null);
+                _tripRepo.ChangeReservationStatus(Trip.Id, "Lack of rooms", null);
             }
+
+            await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning
         }
     }
 

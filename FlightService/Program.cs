@@ -1,26 +1,24 @@
-using System;
-using System.Threading.Tasks;
+using MassTransit;
+using Microsoft.EntityFrameworkCore;
 using FlightService.Repo;
 using FlightService.Data;
 using Flight.Consumers;
-using Shared.Flight.Events;
-using MassTransit;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<FlightContext>(options =>
-    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
+
+string dbConn = builder.Configuration["DATABASE_CONNECTION_STRING"] ??
+    "Host=host.docker.internal;Port=5432;Database=flightdb;Username=postgres;Password=guest;";
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"] ?? "rabbitmq";
+string rabbitmqPort = builder.Configuration["RABBITMQ_PORT"] ?? "5672";
+
+Console.WriteLine("Database connection string: ", dbConn);
+Console.WriteLine("RabbitMQ host: ", rabbitmqHost);
+Console.WriteLine("RabbitMQ port: ", rabbitmqPort);
+
+builder.Services.AddDbContext<FlightContext>(options => options.UseNpgsql(dbConn));
 builder.Services.AddScoped<IFlightRepo, FlightRepo>();
 
-string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
-        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
-
-        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
-        {
-            throw new InvalidOperationException("Invalid port number in configuration");
-        }
-
+#pragma warning disable CS0618 // Disable the obsolete warning (UseInMemoryOutbox())
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.AddConsumer<GetAvailableFlightsEventConsumer>(context =>
@@ -33,11 +31,11 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
-    //cfg.AddSagaStateMachine<ReservationStateMachine, StatefulReservation>().InMemoryRepository();
+
     cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
-rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
+        rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -46,22 +44,8 @@ rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         rabbitCfg.ConfigureEndpoints(context);
     });
 });
+#pragma warning restore CS0618 // Re-enable the obsolete warning
+
 var app = builder.Build();
-// using (var contScope = app.Services.CreateScope())
-// using (var context = contScope.ServiceProvider.GetRequiredService<FlightContext>())
-// {
-//     // Ensure Deleted possible to use for testing
-//     context.Database.EnsureCreated();
-//     context.SaveChanges(); // save to DB
-//     Console.WriteLine("Done clearing database");
-// }
+
 app.Run();
-
-
-
-
-
-
-
-
-

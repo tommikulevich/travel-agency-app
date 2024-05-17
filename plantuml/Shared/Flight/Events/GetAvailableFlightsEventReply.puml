@@ -1,9 +1,0 @@
-@startuml
-class GetAvailableFlightsEventReply {
-    + GetAvailableFlightsEventReply(availableFlights:List<FlightDto>)
-}
-class "List`1"<T> {
-}
-GetAvailableFlightsEventReply --> "CorrelationId" Guid
-GetAvailableFlightsEventReply --> "AvailableFlights<FlightDto>" "List`1"
-@enduml

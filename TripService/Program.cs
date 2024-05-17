@@ -2,28 +2,27 @@ using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using TripService.Data;
 using TripService.Consumers;
-using MassTransit.Futures.Contracts;
 using TripService.Saga;
-// using TripService.Sagas;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+string dbConn = builder.Configuration["DATABASE_CONNECTION_STRING"] ??
+    "Host=host.docker.internal;Port=5432;Database=tripdb;Username=postgres;Password=guest;";
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"] ?? "rabbitmq";
+string rabbitmqPort = builder.Configuration["RABBITMQ_PORT"] ?? "5672";
+
+Console.WriteLine("Database connection string: ", dbConn);
+Console.WriteLine("RabbitMQ host: ", rabbitmqHost);
+Console.WriteLine("RabbitMQ port: ", rabbitmqPort);
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
+
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(dbConn));
 builder.Services.AddScoped<ITripRepo, TripRepo>();
 
-string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
-        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
-
-        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
-        {
-            throw new InvalidOperationException("Invalid port number in configuration");
-        }
-
+#pragma warning disable CS0618 // Disable the obsolete warning (UseInMemoryOutbox())
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.AddConsumer<GetAllTripsConsumer>(context =>
@@ -31,7 +30,6 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
-
     cfg.AddConsumer<GetTripByUserIdConsumer>(context =>
     {
         context.UseMessageRetry(r => r.Interval(3, 1000));
@@ -58,7 +56,7 @@ builder.Services.AddMassTransit(cfg =>
         context.UseInMemoryOutbox();
     });
     cfg.AddConsumer<UnchangeRoomsAvailabilityStatusConsumer>(context =>
-{
+    {
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
@@ -67,21 +65,11 @@ builder.Services.AddMassTransit(cfg =>
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
-    // cfg.AddConsumer<SaveTripConsumer>(context =>
-    // {
-    //     context.UseMessageRetry(r => r.Interval(3, 1000));
-    //     context.UseInMemoryOutbox();
-    // });
-    // cfg.AddConsumer<CreateTripConsumer>(context =>
-    // {
-    //     context.UseMessageRetry(r => r.Interval(3, 1000));
-    //     context.UseInMemoryOutbox();
-    // });
     cfg.AddSagaStateMachine<ReservationStateMachine, ReservationState>().InMemoryRepository();
     cfg.AddDelayedMessageScheduler();
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
-rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
+        rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -90,6 +78,7 @@ rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         rabbitCfg.ConfigureEndpoints(context);
     });
 });
+#pragma warning restore CS0618 // Re-enable the obsolete warning
 
 var app = builder.Build();
 
@@ -100,16 +89,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-
-// init database
-//PrepDb.PrepPopulation(app);
-
-
+// Init own database
+// PrepDb.PrepPopulation(app);
 
 app.Run();
-
-
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }

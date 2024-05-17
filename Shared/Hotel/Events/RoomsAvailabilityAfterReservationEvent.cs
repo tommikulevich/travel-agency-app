@@ -8,6 +8,6 @@ namespace Shared.Hotel.Events {
         public int NumOfKidsTo3 {get; set;}
         public DateTime ArrivalDate {get; set;}
         public DateTime ReturnDate {get; set;}
-        public string RoomType {get; set;}
+        public string RoomType {get; set;} = string.Empty;
     }
 }

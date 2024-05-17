@@ -10,43 +10,46 @@ namespace ApiGateway.Controllers
     public class TripController : ControllerBase
     {
         readonly IRequestClient<GetTripsByUserIdEvent> _getTripsClient;
-
         readonly IRequestClient<GetAllTripsEvent> _getAllTrips;
-
-        readonly IRequestClient<GetTripByPreferencesEvent> _GetTripsByPreferences;
-        readonly IRequestClient<ReservationTripEvent> _ReservationTripEvent;
-        readonly IRequestClient<CheckReservationStatusEvent> _CheckReservationStatusEvent;
+        readonly IRequestClient<GetTripByPreferencesEvent> _getTripsByPreferences;
+        readonly IRequestClient<ReservationTripEvent> _reservationTripEvent;
+        readonly IRequestClient<CheckReservationStatusEvent> _checkReservationStatusEvent;
 
         public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, 
-                            IRequestClient<GetAllTripsEvent> getAllTrips, 
-                            IRequestClient<GetTripByPreferencesEvent> getTripsByPreferences,
-                            IRequestClient<ReservationTripEvent> ReservationTripEvent,
-                            IRequestClient<CheckReservationStatusEvent> CheckReservationStatusEvent)
+                              IRequestClient<GetAllTripsEvent> getAllTrips, 
+                              IRequestClient<GetTripByPreferencesEvent> getTripsByPreferences,
+                              IRequestClient<ReservationTripEvent> reservationTripEvent,
+                              IRequestClient<CheckReservationStatusEvent> checkReservationStatusEvent)
         {
             _getTripsClient = getTripsClient;
             _getAllTrips = getAllTrips;
-            _GetTripsByPreferences = getTripsByPreferences;
-            _ReservationTripEvent = ReservationTripEvent;
-            _CheckReservationStatusEvent = CheckReservationStatusEvent;
+            _getTripsByPreferences = getTripsByPreferences;
+            _reservationTripEvent = reservationTripEvent;
+            _checkReservationStatusEvent = checkReservationStatusEvent;
         }
 
         [HttpGet("GetTripsByUserId")]
-        //[Route("GetTrips")]
-        public async Task<IEnumerable<TripDto>> GetTrips(string ClientId)
+        public async Task<IEnumerable<TripDto>> GetTrips(string clientId)
         {
-            // var userGuid = Guid.Parse(userId);
             Console.WriteLine("-> Getting trips reserved by user...");
-            var response = await _getTripsClient.GetResponse<ReplyTripsDtosEvent>(new GetTripsByUserIdEvent() { CorrelationId = Guid.NewGuid(), ClientId = ClientId });
+            var response = await _getTripsClient.GetResponse<ReplyTripsDtosEvent>(
+                new GetTripsByUserIdEvent() 
+                { 
+                    CorrelationId = Guid.NewGuid(), 
+                    ClientId = clientId 
+                });
+
             var Trips = response.Message.Trips;
+
             return Trips;
         }
+
         [HttpPost("ReserveTrip")]
         public async Task<ReservationTripReplyEvent> ReserveTrip(ReservationDto reservationDto)
         {
-            var reservationId = Guid.NewGuid();
             var request = new ReservationTripEvent()
             {
-                Id = reservationId,
+                Id = Guid.NewGuid(),
                 CorrelationId = reservationDto.OfferId,
                 OfferId = reservationDto.OfferId,
                 ClientId = reservationDto.ClientId,
@@ -69,11 +72,17 @@ namespace ApiGateway.Controllers
                 DiscountPercents = reservationDto.DiscountPercents,
                 NumOfNights = reservationDto.NumOfNights
             };
-            var checkReservationResponse = await _CheckReservationStatusEvent.GetResponse<CheckReservationStatusReplyEvent>(new CheckReservationStatusEvent() {CorrelationId=reservationDto.OfferId});
+
+            var checkReservationResponse = await _checkReservationStatusEvent.GetResponse<CheckReservationStatusReplyEvent>(
+                new CheckReservationStatusEvent() 
+                {
+                    CorrelationId = reservationDto.OfferId
+                });
+
             bool isAvailable = checkReservationResponse.Message.available;
             if (isAvailable)
             {
-                var response = await _ReservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
+                var response = await _reservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
                 return response.Message;
             }
             else
@@ -81,42 +90,43 @@ namespace ApiGateway.Controllers
                 Console.WriteLine("Somebody just reserved your offer");
                 return new ReservationTripReplyEvent() {};
             }
-
-            // var response = await _ReservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
-            
         }
         
         [HttpGet("GetAllTrips")]
         public async Task<IEnumerable<TripDto>> GetAllTrips()
         {
-            // var userGuid = Guid.Parse(userId);
             Console.WriteLine("-> Getting all trips...");
-            var response = await _getAllTrips.GetResponse<ReplyTripsDtosEvent>(new GetAllTripsEvent() { CorrelationId = Guid.NewGuid()});
+            var response = await _getAllTrips.GetResponse<ReplyTripsDtosEvent>(
+                new GetAllTripsEvent() 
+                { 
+                    CorrelationId = Guid.NewGuid()
+                });
+
             var Trips = response.Message.Trips;
+
             return Trips;
         }
 
-[HttpGet("GetTripsByPreferences")]
-        public async Task<IEnumerable<TripDto>> GetTripsByPreferences(string Destination, DateTime DepartureDate, 
-                                                                string DeparturePlace, int NumOfAdults, 
-                                                                int NumOfKidsTo18, int NumOfKidsTo10, 
-                                                                int NumOfKidsTo3)
+        [HttpGet("GetTripsByPreferences")]
+        public async Task<IEnumerable<TripDto>> GetTripsByPreferences(string destination, DateTime departureDate, 
+                string departurePlace, int numOfAdults, int numOfKidsTo18, int numOfKidsTo10, int numOfKidsTo3)
         {
-            // var userGuid = Guid.Parse(userId);
             Console.WriteLine("-> Getting trips by preferences...");
             var queryEvent = new GetTripByPreferencesEvent
             {
                 CorrelationId = Guid.NewGuid(),
-                Destination = Destination,
-                DepartureDate = DepartureDate,
-                DeparturePlace = DeparturePlace,
-                NumOfAdults = NumOfAdults,
-                NumOfKidsTo18 = NumOfKidsTo18,
-                NumOfKidsTo10 = NumOfKidsTo10,
-                NumOfKidsTo3 = NumOfKidsTo3
+                Destination = destination,
+                DepartureDate = departureDate,
+                DeparturePlace = departurePlace,
+                NumOfAdults = numOfAdults,
+                NumOfKidsTo18 = numOfKidsTo18,
+                NumOfKidsTo10 = numOfKidsTo10,
+                NumOfKidsTo3 = numOfKidsTo3
             };
-            var response = await _GetTripsByPreferences.GetResponse<ReplyTripsDtosEvent>(queryEvent);
+            var response = await _getTripsByPreferences.GetResponse<ReplyTripsDtosEvent>(queryEvent);
+
             var Trips = response.Message.Trips;
+
             return Trips;
         }
     }

@@ -1,8 +1,0 @@
-@startuml
-class AvailableRoomsRequest {
-    + DeparturePlace : string <<get>> <<set>>
-    + ArrivalPlace : string <<get>> <<set>>
-}
-AvailableRoomsRequest --> "DepartureTime" DateTime
-AvailableRoomsRequest --> "ArrivalTime" DateTime
-@enduml

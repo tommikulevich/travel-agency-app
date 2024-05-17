@@ -3,15 +3,19 @@ using HotelService.Data;
 using HotelService.Models;
 using Shared.Hotel.Events;
 
-namespace HotelService.Consumers {
-    public class ReserveRoomEventConsumer : IConsumer<ReserveRoomEvent> {
+namespace HotelService.Consumers 
+{
+    public class ReserveRoomEventConsumer : IConsumer<ReserveRoomEvent> 
+    {
         private readonly HotelDbContext _context; 
 
-        public ReserveRoomEventConsumer(HotelDbContext context) {
+        public ReserveRoomEventConsumer(HotelDbContext context) 
+        {
             _context = context;
         }
 
-        public async Task Consume(ConsumeContext<ReserveRoomEvent> context) {
+        public async Task Consume(ConsumeContext<ReserveRoomEvent> context) 
+        {
             var eventMessage = context.Message;
             var totalGuests = eventMessage.NumOfAdults + eventMessage.NumOfKidsTo18 
                 + eventMessage.NumOfKidsTo10 + eventMessage.NumOfKidsTo3;
@@ -28,22 +32,26 @@ namespace HotelService.Consumers {
             Guid avaliableRoomId = new Guid(zeros);
             Guid avaliableHotelId = new Guid(zeros);
             
-            foreach (var room in suitableRooms) {
+            foreach (var room in suitableRooms) 
+            {
                 Guid roomId = room.Id;
                 var isAvailable = !_context.RoomEvent.Any(re => re.Status == "Reserved" 
                     && re.StartDate < eventMessage.ReturnDate.ToUniversalTime() 
                     && re.EndDate > eventMessage.ArrivalDate.ToUniversalTime() 
                     && re.RoomId == roomId);
 
-                if (isAvailable) {
+                if (isAvailable) 
+                {
                     avaliableRoomId = roomId;
                     avaliableHotelId = room.HotelId;
                     numOfAvailableRooms += 1;
                 }
             }
             
-            if (numOfAvailableRooms > 0) {
-                var NewEvent = new RoomEvent {
+            if (numOfAvailableRooms > 0) 
+            {
+                var NewEvent = new RoomEvent 
+                {
                     Id = Guid.NewGuid(),
                     RoomId = avaliableRoomId,
                     Status = "Reserved",
@@ -52,7 +60,8 @@ namespace HotelService.Consumers {
                 };
                 _context.RoomEvent.Add(NewEvent);
 
-                try {
+                try 
+                {
                     _context.SaveChanges();
                     Console.WriteLine($"Reservation successful for Client ID: {eventMessage.ClientId}");
 
@@ -63,7 +72,8 @@ namespace HotelService.Consumers {
                         SuccessfullyReserved = true
                     });
 
-                    if (numOfAvailableRooms > 1) {
+                    if (numOfAvailableRooms > 1) 
+                    {
                         await context.Publish(new RoomsAvailabilityAfterReservationEvent {
                             Id = Guid.NewGuid(),
                             HotelId = avaliableHotelId,
@@ -76,7 +86,9 @@ namespace HotelService.Consumers {
                             RoomType = eventMessage.RoomType  
                         });
                     }
-                } catch (Exception e) {
+                } 
+                catch (Exception e) 
+                {
                     Console.WriteLine("Reservation failed: " + e.Message);
                     await context.RespondAsync(new ReserveRoomReplyEvent {
                         Id = Guid.NewGuid(),
@@ -85,7 +97,9 @@ namespace HotelService.Consumers {
                         SuccessfullyReserved = false
                     });
                 }
-            } else {
+            } 
+            else 
+            {
                 Console.WriteLine("No available rooms that meet the criteria.");
                 await context.RespondAsync(new ReserveRoomReplyEvent {
                     Id = Guid.NewGuid(),

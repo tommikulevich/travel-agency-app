@@ -1,5 +1,0 @@
-@startuml
-class PrepDb <<static>> {
-    + {static} PrepPopulation(app:IApplicationBuilder) : void
-}
-@enduml

@@ -1,7 +1,0 @@
-@startuml
-class HotelRepo {
-    + HotelRepo(context:HotelDbContext)
-    + GetAvailableHotels(request:AvailableRoomsRequest) : List<Hotel>
-}
-IHotelRepo <|-- HotelRepo
-@enduml

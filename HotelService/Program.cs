@@ -5,16 +5,16 @@ using HotelService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+string dbConn = builder.Configuration["DATABASE_CONNECTION_STRING"] ??
+    "Host=host.docker.internal;Port=5432;Database=hoteldb;Username=postgres;Password=guest;";
+string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"] ?? "rabbitmq";
+string rabbitmqPort = builder.Configuration["RABBITMQ_PORT"] ?? "5672";
 
-string rabbitmqHost = builder.Configuration["RABBITMQ_HOST"];
-        string rabbitmqHostPortString = builder.Configuration["RABBITMQ_PORT"];
+Console.WriteLine("Database connection string: ", dbConn);
+Console.WriteLine("RabbitMQ host: ", rabbitmqHost);
+Console.WriteLine("RabbitMQ port: ", rabbitmqPort);
 
-        if (!int.TryParse(rabbitmqHostPortString, out int rabbitmqPort))
-        {
-            throw new InvalidOperationException("Invalid port number in configuration");
-        }
-
-
+#pragma warning disable CS0618 // Disable the obsolete warning (UseInMemoryOutbox())
 builder.Services.AddMassTransit(x => {
     x.AddConsumer<AvailableRoomsConsumer>();
     x.AddConsumer<ReserveRoomEventConsumer>(context =>
@@ -30,7 +30,7 @@ builder.Services.AddMassTransit(x => {
     x.AddDelayedMessageScheduler();
     x.UsingRabbitMq((context, rabbitCfg) =>
     {
-rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
+        rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
         {
             h.Username("guest");
             h.Password("guest");
@@ -40,9 +40,9 @@ rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
     });
     
 });
+#pragma warning restore CS0618 // Re-enable the obsolete warning
 
-builder.Services.AddDbContext<HotelDbContext>(options =>
-    options.UseNpgsql(builder.Configuration["DATABASE_CONNECTION_STRING"]));
+builder.Services.AddDbContext<HotelDbContext>(options => options.UseNpgsql(dbConn));
 builder.Services.AddScoped<IHotelRepo, HotelRepo>();
 
 var app = builder.Build();

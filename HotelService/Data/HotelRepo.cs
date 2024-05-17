@@ -1,20 +1,27 @@
 using Microsoft.EntityFrameworkCore;
-using Shared.Hotel.Events;
 using HotelService.Models;
+using Shared.Hotel.Events;
 
-namespace HotelService.Data {
-    public class HotelRepo : IHotelRepo {
+namespace HotelService.Data 
+{
+    public class HotelRepo : IHotelRepo 
+    {
         private readonly HotelDbContext _context;
 
-        public HotelRepo(HotelDbContext context) {
+        public HotelRepo(HotelDbContext context) 
+        {
             _context = context;
         }
 
-        public List<Hotel> GetAvailableHotels(AvailableRoomsRequest request) {
+        public List<Hotel> GetAvailableHotels(AvailableRoomsRequest request) 
+        {
             return _context.Hotel.Include(h => h.Rooms)
                 .ThenInclude(r => r.RoomEvents)
                 .Where(h => h.Rooms.Any(r => 
-                    r.RoomEvents.All(re => re.Status != "Reserved" || re.EndDate <= request.DepartureTime || re.StartDate >= request.ArrivalTime)))
+                    r.RoomEvents.All(
+                        re => re.Status != "Reserved" 
+                        || re.EndDate <= request.DepartureTime 
+                        || re.StartDate >= request.ArrivalTime)))
                 .ToList();
         }
     }

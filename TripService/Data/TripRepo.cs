@@ -5,6 +5,7 @@ namespace TripService.Data
     public class TripRepo : ITripRepo
     {
         private readonly AppDbContext _context;
+
         public TripRepo(AppDbContext context)
         {
             _context = context;
@@ -25,27 +26,18 @@ namespace TripService.Data
         }
 
         public IEnumerable<Trip> GetTripsByPreferences(string Destination, DateTime DepartureDate, 
-                                                                        string DeparturePlace, int NumOfAdults, 
-                                                                        int NumOfKidsTo18, int NumOfKidsTo10, 
-                                                                        int NumOfKidsTo3)
+                string DeparturePlace, int NumOfAdults, int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3)
         {
-            IQueryable<Trip> query = _context.Trip;
-
-            query = query.Where(t => t.Country == Destination);
-
             DateTime utcDepartureDate = DepartureDate.ToUniversalTime();
+
+            IQueryable<Trip> query = _context.Trip;
+            query = query.Where(t => t.Country == Destination);
             query = query.Where(t => t.DepartureDate.Date == utcDepartureDate.Date);
-
             query = query.Where(t => t.DeparturePlace == DeparturePlace);
-
             query = query.Where(t => t.NumOfAdults == NumOfAdults);
-
             query = query.Where(t => t.NumOfKidsTo18 == NumOfKidsTo18);
-
             query = query.Where(t => t.NumOfKidsTo10 == NumOfKidsTo10);
-
             query = query.Where(t => t.NumOfKidsTo3 == NumOfKidsTo3);
-
 
             return query.ToList();
         }
@@ -58,7 +50,13 @@ namespace TripService.Data
 
         public Trip GetTripByGuid(Guid guid)
         {
-            return _context.Trip.FirstOrDefault(t => t.Id == guid);
+            var trip = _context.Trip.FirstOrDefault(t => t.Id == guid);
+            if (trip == null)
+            {
+                throw new KeyNotFoundException($"Trip with ID {guid} not found.");
+            }
+
+            return trip;
         }
 
         public void SaveTrip(Trip Trip)
@@ -70,8 +68,13 @@ namespace TripService.Data
         public bool CheckAvailability(Guid TripId)
         {
             var trip = _context.Trip.FirstOrDefault(p => p.Id == TripId);
-            string status = trip.Status;
+            if (trip == null)
+            {
+                throw new KeyNotFoundException($"Trip with ID {TripId} not found.");
+            }
+
             bool result;
+            string status = trip.Status;
             if (status == "Dostępna")
             {
                 result = true;
@@ -80,14 +83,22 @@ namespace TripService.Data
             {
                 result = false;
             }
+
             return result;
         }
+
         public void ChangeReservationStatus(Guid TripId, string newReservationStatus, Guid? UserId)
         {
-            // var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
-            // trip.Status = newReservationStatus;
-            _context.Trip.FirstOrDefault(t => t.Id == TripId).ClientId = UserId;
-            _context.Trip.FirstOrDefault(t => t.Id == TripId).Status = newReservationStatus;
+            var trip = _context.Trip.FirstOrDefault(t => t.Id == TripId);
+            if (trip != null)
+            {
+                trip.ClientId = UserId;
+                trip.Status = newReservationStatus;
+            }
+            else
+            {
+                Console.WriteLine($"Trip with ID {TripId} not found.");
+            }
             _context.SaveChanges();
         }
 
