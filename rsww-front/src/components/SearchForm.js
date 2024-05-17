@@ -91,7 +91,7 @@ function SearchForm({ onSearch }) {
       </label>
       <label>
         Liczba dzieci do 3 lat:
-        <input type="number" min="0" max="10" value={numOfKidsTo3} onChange={e => setNumOfKidsTo3(e.target.value)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
+        <input type="number" min="0" max="10" value={numOfKidsTo3} onChange={e => setNumOfKidsTo3(e.target.value ? e.target.value : 0)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
       </label>
       <input type="submit" value="Szukaj" />
     </form>
