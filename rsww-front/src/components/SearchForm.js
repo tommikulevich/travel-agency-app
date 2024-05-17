@@ -59,7 +59,7 @@ function SearchForm({ onSearch }) {
       </label>
       <label>
         Data wyjazdu:
-        <input type="date" value={departureDate} onChange={e => setDepartureDate(e.target.value)} />
+        <input type="date" value={departureDate} onChange={e => setDepartureDate(e.target.value)} required/>
       </label>
       <label>
         Miejsce wyjazdu:
