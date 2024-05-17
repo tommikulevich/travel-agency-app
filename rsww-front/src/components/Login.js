@@ -17,12 +17,20 @@ function Login() {
     try {
       const response = await axios.post(`http://${reactAppHost}:${reactAppPort}/api/Login/Auth?UserName=${username}&Password=${password}`);
       console.log(response.data);
-      setClientId(response.data.userId);
-      console.log('UserID_konsolk_loginjs:', response.data.userId);
-      navigate('/'); // Przekieruj do strony głównej
+
+      if (response.data.userId == 0) {
+        alert("Zły użytkownik lub hasło");
+        navigate('/');
+      } else {
+        setClientId(response.data.userId);
+        navigate('/'); // Przekieruj do strony głównej
+      }
+
+      //console.log('UserID_konsolk_loginjs:', response.data.userId);
+      //navigate('/'); // Przekieruj do strony głównej
     } catch (error) {
       console.log('Error')
-      console.error(error);
+      // console.error(error);
     }
   };
 

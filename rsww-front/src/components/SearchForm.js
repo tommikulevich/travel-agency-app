@@ -22,14 +22,20 @@ function SearchForm({ onSearch }) {
   const handleSubmit = async event => {
     event.preventDefault();
 
+    const departureYear = new Date(departureDate).getFullYear();
+    if (departureYear > 2026) {
+      alert('Rok wyjazdu nie może być późniejszy niż 2026');
+      return;
+    }
+
     const searchParams = {
       Destination: destination,
       DepartureDate: departureDate,
       DeparturePlace: departurePlace,
-      NumOfAdults: numOfAdults,
-      NumOfKidsTo18: numOfKidsTo18,
-      NumOfKidsTo10: numOfKidsTo10,
-      NumOfKidsTo3: numOfKidsTo3,
+      NumOfAdults: numOfAdults || 0,
+      NumOfKidsTo18: numOfKidsTo18 || 0,
+      NumOfKidsTo10: numOfKidsTo10 || 0,
+      NumOfKidsTo3: numOfKidsTo3 || 0,
     };
 
     onSearch(searchParams);
@@ -73,19 +79,19 @@ function SearchForm({ onSearch }) {
       </label>
       <label>
         Liczba dorosłych:
-        <input type="number" value={numOfAdults} onChange={e => setNumOfAdults(e.target.value)} />
+        <input type="number" min="0" max="10" value={numOfAdults} onChange={e => setNumOfAdults(e.target.value ? e.target.value : 0)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
       </label>
       <label>
         Liczba dzieci do 18 lat:
-        <input type="number" value={numOfKidsTo18} onChange={e => setNumOfKidsTo18(e.target.value)} />
+        <input type="number" min="0" max="10" value={numOfKidsTo18} onChange={e => setNumOfKidsTo18(e.target.value ? e.target.value : 0)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
       </label>
       <label>
         Liczba dzieci do 10 lat:
-        <input type="number" value={numOfKidsTo10} onChange={e => setNumOfKidsTo10(e.target.value)} />
+        <input type="number" min="0" max="10" value={numOfKidsTo10} onChange={e => setNumOfKidsTo10(e.target.value ? e.target.value : 0)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
       </label>
       <label>
         Liczba dzieci do 3 lat:
-        <input type="number" value={numOfKidsTo3} onChange={e => setNumOfKidsTo3(e.target.value)} />
+        <input type="number" min="0" max="10" value={numOfKidsTo3} onChange={e => setNumOfKidsTo3(e.target.value)} onKeyPress={(event) => {if (!/[0-9]/.test(event.key)) event.preventDefault();}} />
       </label>
       <input type="submit" value="Szukaj" />
     </form>
