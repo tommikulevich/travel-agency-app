@@ -1,6 +1,9 @@
 using ApiGateway.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.OpenApi.Models;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +45,9 @@ builder.Services.AddMassTransit(cfg =>
     });
 });
 
+// Add SignalR
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -51,5 +57,8 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors();
 app.MapControllers();
+
+// Map SignalR hub
+app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

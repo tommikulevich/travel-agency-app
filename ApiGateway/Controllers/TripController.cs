@@ -1,7 +1,11 @@
 using MassTransit;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Shared.Trip.Dtos;
 using Shared.Trip.Events;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ApiGateway.Controllers
 {
@@ -9,23 +13,26 @@ namespace ApiGateway.Controllers
     [Route("api/[controller]")]
     public class TripController : ControllerBase
     {
-        readonly IRequestClient<GetTripsByUserIdEvent> _getTripsClient;
-        readonly IRequestClient<GetAllTripsEvent> _getAllTrips;
-        readonly IRequestClient<GetTripByPreferencesEvent> _getTripsByPreferences;
-        readonly IRequestClient<ReservationTripEvent> _reservationTripEvent;
-        readonly IRequestClient<CheckReservationStatusEvent> _checkReservationStatusEvent;
+        private readonly IRequestClient<GetTripsByUserIdEvent> _getTripsClient;
+        private readonly IRequestClient<GetAllTripsEvent> _getAllTrips;
+        private readonly IRequestClient<GetTripByPreferencesEvent> _getTripsByPreferences;
+        private readonly IRequestClient<ReservationTripEvent> _reservationTripEvent;
+        private readonly IRequestClient<CheckReservationStatusEvent> _checkReservationStatusEvent;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
         public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, 
                               IRequestClient<GetAllTripsEvent> getAllTrips, 
                               IRequestClient<GetTripByPreferencesEvent> getTripsByPreferences,
                               IRequestClient<ReservationTripEvent> reservationTripEvent,
-                              IRequestClient<CheckReservationStatusEvent> checkReservationStatusEvent)
+                              IRequestClient<CheckReservationStatusEvent> checkReservationStatusEvent,
+                              IHubContext<NotificationHub> hubContext)
         {
             _getTripsClient = getTripsClient;
             _getAllTrips = getAllTrips;
             _getTripsByPreferences = getTripsByPreferences;
             _reservationTripEvent = reservationTripEvent;
             _checkReservationStatusEvent = checkReservationStatusEvent;
+            _hubContext = hubContext;
         }
 
         [HttpGet("GetTripsByUserId")]
@@ -40,6 +47,9 @@ namespace ApiGateway.Controllers
                 });
 
             var Trips = response.Message.Trips;
+
+            // Notify clients
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trips for user {clientId} have been fetched.");
 
             return Trips;
         }
@@ -83,11 +93,19 @@ namespace ApiGateway.Controllers
             if (isAvailable)
             {
                 var response = await _reservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
+                
+                // Notify clients
+                await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trip with ID {reservationDto.OfferId} has been reserved.");
+
                 return response.Message;
             }
             else
             {
                 Console.WriteLine("Somebody just reserved your offer");
+                
+                // Notify clients
+                await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trip reservation failed, the offer was just reserved by someone else.");
+
                 return new ReservationTripReplyEvent() {};
             }
         }
@@ -103,6 +121,9 @@ namespace ApiGateway.Controllers
                 });
 
             var Trips = response.Message.Trips;
+
+            // Notify clients
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "All trips have been fetched.");
 
             return Trips;
         }
@@ -126,6 +147,9 @@ namespace ApiGateway.Controllers
             var response = await _getTripsByPreferences.GetResponse<ReplyTripsDtosEvent>(queryEvent);
 
             var Trips = response.Message.Trips;
+
+            // Notify clients
+            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
 
             return Trips;
         }
