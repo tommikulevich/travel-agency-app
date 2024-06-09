@@ -102,6 +102,30 @@ namespace TripService.Data
             _context.SaveChanges();
         }
 
+        public string GetMostPopularReservedDestination()
+        {
+            // Step 1: Retrieve all offers with the tag "reserved"
+            var reservedOffers = _context.Trip
+                .Where(o => o.Status == "Zarezerwowana")
+                .ToList();
+
+            // Step 2: Group by destination and count occurrences
+            var destinationCount = reservedOffers
+                .GroupBy(o => o.Country)
+                .Select(g => new
+                {
+                    Destination = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            // Step 3: Determine the most popular destination
+            var mostPopularDestination = destinationCount.FirstOrDefault();
+
+            return mostPopularDestination?.Destination;
+        }
+
         public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
                 int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3, DateTime ArrivalDate,
                 DateTime ReturnDate, string RoomType)

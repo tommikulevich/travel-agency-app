@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
 using System;
+using ApiGateway.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +35,11 @@ builder.Services.AddScoped<IUserRepo, UserRepo>();
 
 builder.Services.AddMassTransit(cfg =>
 {
+    cfg.AddConsumer<NewDestinationPreferenceConsumer>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
     cfg.UsingRabbitMq((context, rabbitCfg) =>
     {
         rabbitCfg.Host(new Uri($"rabbitmq://{rabbitmqHost}:{rabbitmqPort}/"), h =>
