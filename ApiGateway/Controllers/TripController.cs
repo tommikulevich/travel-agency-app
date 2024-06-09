@@ -49,7 +49,7 @@ namespace ApiGateway.Controllers
             var Trips = response.Message.Trips;
 
             // Notify clients
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trips for user {clientId} have been fetched.");
+            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trips for user {clientId} have been fetched.");
 
             return Trips;
         }
@@ -95,7 +95,7 @@ namespace ApiGateway.Controllers
                 var response = await _reservationTripEvent.GetResponse<ReservationTripReplyEvent>(request);
                 
                 // Notify clients
-                await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trip with ID {reservationDto.OfferId} has been reserved.");
+                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trip with ID {reservationDto.OfferId} has been reserved.");
 
                 return response.Message;
             }
@@ -104,7 +104,7 @@ namespace ApiGateway.Controllers
                 Console.WriteLine("Somebody just reserved your offer");
                 
                 // Notify clients
-                await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trip reservation failed, the offer was just reserved by someone else.");
+                // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trip reservation failed, the offer was just reserved by someone else.");
 
                 return new ReservationTripReplyEvent() {};
             }
@@ -123,7 +123,7 @@ namespace ApiGateway.Controllers
             var Trips = response.Message.Trips;
 
             // Notify clients
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "All trips have been fetched.");
+            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "All trips have been fetched.");
 
             return Trips;
         }
@@ -149,7 +149,7 @@ namespace ApiGateway.Controllers
             var Trips = response.Message.Trips;
 
             // Notify clients
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
+            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
 
             return Trips;
         }
