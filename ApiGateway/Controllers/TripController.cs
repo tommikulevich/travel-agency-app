@@ -18,6 +18,7 @@ namespace ApiGateway.Controllers
         private readonly IRequestClient<GetTripByPreferencesEvent> _getTripsByPreferences;
         private readonly IRequestClient<ReservationTripEvent> _reservationTripEvent;
         private readonly IRequestClient<CheckReservationStatusEvent> _checkReservationStatusEvent;
+        private readonly IRequestClient<GetAllPreferencesEvent> _getAllPreferences;
         private readonly IHubContext<NotificationHub> _hubContext;
 
         public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, 
@@ -25,6 +26,7 @@ namespace ApiGateway.Controllers
                               IRequestClient<GetTripByPreferencesEvent> getTripsByPreferences,
                               IRequestClient<ReservationTripEvent> reservationTripEvent,
                               IRequestClient<CheckReservationStatusEvent> checkReservationStatusEvent,
+                              IRequestClient<GetAllPreferencesEvent> getAllPreferences,
                               IHubContext<NotificationHub> hubContext)
         {
             _getTripsClient = getTripsClient;
@@ -32,6 +34,7 @@ namespace ApiGateway.Controllers
             _getTripsByPreferences = getTripsByPreferences;
             _reservationTripEvent = reservationTripEvent;
             _checkReservationStatusEvent = checkReservationStatusEvent;
+            _getAllPreferences = getAllPreferences;
             _hubContext = hubContext;
         }
 
@@ -152,6 +155,24 @@ namespace ApiGateway.Controllers
             // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
 
             return Trips;
+        }
+
+        [HttpGet("GetAllPreferences")]
+        public async Task<PreferencesDto> GetAllPreferences()
+        {
+            Console.WriteLine("-> Getting all customers preferences...");
+            var queryEvent = new GetTripByPreferencesEvent
+            {
+                CorrelationId = Guid.NewGuid(),
+            };
+            var response = await _getAllPreferences.GetResponse<GetAllPreferencesReplyEvent>(queryEvent);
+
+            var Preferences = response.Message.Preferences;
+
+            // Notify clients
+            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
+
+            return Preferences;
         }
     }
 }

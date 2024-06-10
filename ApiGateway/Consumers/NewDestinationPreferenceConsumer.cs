@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace ApiGateway.Consumers
 {
 
-    public class NewDestinationPreferenceConsumer : IConsumer<NewDestinationPreferenceEvent>
+    public class NewDestinationPreferenceConsumer : IConsumer<NewPreferenceEvent>
     {
         private readonly IHubContext<NotificationHub> _hubContext;
 
@@ -14,12 +14,13 @@ namespace ApiGateway.Consumers
             _hubContext = hubContext;
         }
 
-        public async Task Consume(ConsumeContext<NewDestinationPreferenceEvent> context)
+        public async Task Consume(ConsumeContext<NewPreferenceEvent> context)
         {
             Console.WriteLine("Reservation status changed");
             
             Guid? CorrelationId = context.Message.CorrelationId;
             var newPreference = context.Message.newPreference;
+            var typeOfPreference = context.Message.typeOfPreference;
 
             await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"{newPreference}\n is new preference");
             
