@@ -4,7 +4,7 @@ import axios from 'axios';
 import './Offers.css';
 import { useNavigate } from 'react-router-dom';
 
-function Offers({ offers = [], reservedOffer }) {
+function Offers({ offers = [] }) {
   const [showAllFeatures, setShowAllFeatures] = useState(false);
   const { clientId } = useContext(AppContext);
   const navigate = useNavigate();
@@ -52,12 +52,8 @@ function Offers({ offers = [], reservedOffer }) {
   };
 
   useEffect(() => {
-    console.log("Offers component re-rendered with reservedOffer:", reservedOffer);
-  }, [reservedOffer]);
-
-  const normalizeString = (str) => str ? str.replace(/\s/g, '').replace('wasjustreserved', '') : '';
-
-  const normalizedReservedOffer = normalizeString(reservedOffer);
+    console.log("Offers component re-rendered with offers:", offers);
+  }, [offers]);
 
   return (
     <div className="offers" style={{ maxHeight: '700px', overflowY: 'scroll' }}>
@@ -65,9 +61,9 @@ function Offers({ offers = [], reservedOffer }) {
         const features = offer.features.split('|');
         const visibleFeatures = showAllFeatures ? features : features.slice(0, 1);
 
-        const isReserved = normalizedReservedOffer === normalizeString(offer.id);
-        console.log(`Rendering offer ${offer.id}, reservedOffer: ${normalizedReservedOffer}, condition: ${isReserved}`);
-        console.log(`Type of normalizedReservedOffer: ${typeof normalizedReservedOffer}, Type of offer.id: ${typeof offer.id}`);
+        const isReserved = offer.isReserved;
+        console.log(`Rendering offer ${offer.id}, isReserved: ${isReserved}`);
+        console.log(`Type of offer.id: ${typeof offer.id}`);
 
         return (
           <div key={index} className={`offer-card ${isReserved ? 'reserved' : ''}`}>
@@ -90,11 +86,15 @@ function Offers({ offers = [], reservedOffer }) {
             <div>
               Cechy: {visibleFeatures.join(', ')}
             </div>
-            <button onClick={toggleShowAllFeatures}>
-              {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
-            </button>
-            {offer.status !== "Zarezerwowana" && clientId && (
-              <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
+            {!isReserved && (
+              <>
+                <button onClick={toggleShowAllFeatures}>
+                  {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
+                </button>
+                {offer.status !== "Zarezerwowana" && clientId && (
+                  <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
+                )}
+              </>
             )}
             <p>Status: {offer.status}</p>
             {isReserved && <div className="reserved-message">Ta oferta właśnie została zarezerwowana</div>}
