@@ -58,3 +58,15 @@ input[type="submit"] {
 input[type="submit"]:hover {
   background-color: #ff6347;
 }
+
+.popup {
+  position: fixed;
+  top: 10%;
+  right: 10%;
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 20px;
+  border: 1px solid #f5c6cb;
+  border-radius: 5px;
+  z-index: 1000;
+}

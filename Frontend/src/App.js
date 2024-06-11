@@ -9,10 +9,12 @@ import ReservedOffers from './components/ReservedOffers';
 import Login from './components/Login';
 import Register from './components/Register';
 import './App.css';
+import TripList from './components/TripList';
 
 export const AppContext = createContext();
 
 const App = () => {
+  const [reservedOffer, setReservedOffer] = useState(null);
   const [offers, setOffers] = useState([]);
   const [clientId, setClientId] = useState(null);
 
@@ -50,8 +52,14 @@ const App = () => {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    connection.on("ReceiveMessage", (message) => {
-      console.log("Received message:", message);
+    connection.on("ReceiveMessage", (offerId) => {
+      console.log("Received offer ID:", offerId);
+      setReservedOffer(offerId);
+    });
+
+    connection.on("OfferReserved", (offerId) => {
+      console.log("Offer reserved:", offerId);
+      setReservedOffer(offerId);
     });
 
     connection.start()
@@ -62,7 +70,33 @@ const App = () => {
     return () => {
       connection.stop().then(() => console.log("SignalR Disconnected"));
     };
-  }, [reactAppHost, reactAppPort]);
+  }, []);
+
+  useEffect(() => {
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`http://${process.env.REACT_APP_HOST || 'localhost'}:${process.env.REACT_APP_PORT || 3000}/notificationHub`)
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    connection.on("ReceiveMessage", (offerId) => {
+      console.log("Received offer ID:", offerId);
+      setReservedOffer(offerId);
+    });
+
+    connection.on("OfferReserved", (offerId) => {
+      console.log("Offer reserved:", offerId);
+      setReservedOffer(offerId);
+    });
+
+    connection.start()
+      .then(() => console.log("SignalR Connected"))
+      .catch((err) => console.error("SignalR Connection Error:", err));
+
+    // Clean up the connection on component unmount
+    return () => {
+      connection.stop().then(() => console.log("SignalR Disconnected"));
+    };
+  }, []);
 
   return (
     <AppContext.Provider value={{ clientId, setClientId }}>
@@ -74,7 +108,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-offers" element={<ReservedOffers />} />
-              <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} /></>} />
+              <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} reservedOffer={reservedOffer} /><TripList reservedOffer={reservedOffer} /></>} />
             </Routes>
           </div>
           <footer style={{ textAlign: 'left', padding: '2px', fontSize: '8px' }}>

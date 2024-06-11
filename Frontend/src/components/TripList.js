@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import Offer from './Offers';
+import './TripList.css';
 
-function TripList() {
+function TripList({ reservedOffer }) {
   const [trips, setTrips] = useState([]);
 
   useEffect(() => {
@@ -14,13 +16,17 @@ function TripList() {
   }, []);
 
   return (
-    <ul>
+    <div className="trip-list">
       {trips.map(trip => (
-        <li key={trip.id}>
-          {trip.name} ({trip.destination})
-        </li>
+        <Offer
+          key={trip.id}
+          id={trip.id}
+          title={trip.name}
+          destination={trip.destination}
+          reservedOfferId={reservedOffer}
+        />
       ))}
-    </ul>
+    </div>
   );
 }
 
