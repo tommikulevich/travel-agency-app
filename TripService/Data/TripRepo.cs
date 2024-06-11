@@ -102,6 +102,90 @@ namespace TripService.Data
             _context.SaveChanges();
         }
 
+        public string GetMostPopularReservedDestination()
+        {
+            var reservedOffers = _context.Trip
+                .Where(o => o.Status == "Zarezerwowana")
+                .ToList();
+
+            var destinationCount = reservedOffers
+                .GroupBy(o => o.Country)
+                .Select(g => new
+                {
+                    Destination = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            var mostPopularDestination = destinationCount.FirstOrDefault();
+
+            return mostPopularDestination?.Destination;
+        }
+
+        public string GetMostPopularReservedHotel()
+        {
+            var reservedOffers = _context.Trip
+                .Where(o => o.Status == "Zarezerwowana")
+                .ToList();
+
+            var hotelCount = reservedOffers
+                .GroupBy(o => o.Name)
+                .Select(g => new
+                {
+                    Destination = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            var mostPopularHotel = hotelCount.FirstOrDefault();
+
+            return mostPopularHotel?.Destination;
+        }
+
+        public string GetMostPopularReservedRoom()
+        {
+            var reservedOffers = _context.Trip
+                .Where(o => o.Status == "Zarezerwowana")
+                .ToList();
+
+            var roomCount = reservedOffers
+                .GroupBy(o => o.RoomType)
+                .Select(g => new
+                {
+                    Destination = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            var mostPopularRoom = roomCount.FirstOrDefault();
+
+            return mostPopularRoom?.Destination;
+        }
+
+        public string GetMostPopularReservedTransport()
+        {
+            var reservedOffers = _context.Trip
+                .Where(o => o.Status == "Zarezerwowana")
+                .ToList();
+
+            var transportCount = reservedOffers
+                .GroupBy(o => o.TransportType)
+                .Select(g => new
+                {
+                    Destination = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .ToList();
+
+            var mostPopularTransport = transportCount.FirstOrDefault();
+
+            return mostPopularTransport?.Destination;
+        }
+
         public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
                 int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3, DateTime ArrivalDate,
                 DateTime ReturnDate, string RoomType)

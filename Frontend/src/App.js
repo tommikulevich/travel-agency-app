@@ -1,6 +1,7 @@
 import React, { createContext, useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import * as signalR from '@microsoft/signalr';
 import Header from './components/Header';
 import SearchForm from './components/SearchForm';
 import Offers from './components/Offers';
@@ -41,6 +42,27 @@ const App = () => {
       console.error('Error searching offers:', error);
     }
   };
+
+  // SignalR connection setup
+  useEffect(() => {
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`http://${reactAppHost}:${reactAppPort}/notificationHub`)
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    connection.on("ReceiveMessage", (message) => {
+      console.log("Received message:", message);
+    });
+
+    connection.start()
+      .then(() => console.log("SignalR Connected"))
+      .catch((err) => console.error("SignalR Connection Error:", err));
+
+    // Clean up the connection on component unmount
+    return () => {
+      connection.stop().then(() => console.log("SignalR Disconnected"));
+    };
+  }, [reactAppHost, reactAppPort]);
 
   return (
     <AppContext.Provider value={{ clientId, setClientId }}>
