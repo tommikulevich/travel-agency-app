@@ -29,9 +29,9 @@ namespace TripService.Consumers
 
             foreach(var Trip in Trips)
             {
-                if ( Trip.Status == "Lack of flight seats" ) 
+                if ( Trip.Status == "Brak pokoi" ) 
                 {
-                    _tripRepo.ChangeReservationStatus(Trip.Id, "Available", null);
+                    _tripRepo.ChangeReservationStatus(Trip.Id, "Dostępna", null);
                 }
             }
 
