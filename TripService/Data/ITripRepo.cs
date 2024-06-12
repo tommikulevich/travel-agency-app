@@ -21,5 +21,7 @@ namespace TripService.Data
             int NumOfKidsTo18, int NumOfKidsTo10, int NumOfKidsTo3, DateTime ArrivalDate,
             DateTime ReturnDate, string RoomType);
         public IEnumerable<Trip> GetTripsByFlightId(Guid? flightId);
+        public void CreateChangesEvent(ChangesEvent change);
+        public Trip? GetRandomTripAndGenerateChanges();
     }
 }
