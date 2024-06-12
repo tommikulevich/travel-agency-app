@@ -22,7 +22,7 @@ namespace ApiGateway.Consumers
             var newPreference = context.Message.newPreference;
             var typeOfPreference = context.Message.typeOfPreference;
 
-            await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"{newPreference}\n is new preference");
+            await _hubContext.Clients.All.SendAsync(typeOfPreference, $"{newPreference}\n is new preference");
             
             await Task.Yield(); 
 
