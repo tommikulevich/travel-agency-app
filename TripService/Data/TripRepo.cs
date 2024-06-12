@@ -1,3 +1,4 @@
+using Shared.Trip.Dtos;
 using TripService.Models;
 
 namespace TripService.Data
@@ -222,7 +223,7 @@ namespace TripService.Data
             _context.ChangesEvent.Add(change);
         }
 
-        public Trip? GetRandomTripAndGenerateChanges()
+        public ChangesEventDto GetRandomTripAndGenerateChanges()
         {
             var specificTrips = _context.Trip.Where(
                 t => t.Status == "Dostępna" 
@@ -241,7 +242,8 @@ namespace TripService.Data
             Console.WriteLine($"Generator selects offer: {selectedTrip.Id}");
 
             // Decide if we are going to change price or status (price has 60% probability)
-            string changeType = rand.Next(10) < 6 ? "Price" : "Status";
+            // string changeType = rand.Next(10) < 6 ? "Price" : "Status";
+            string changeType = "Status";
             string changeValue = "-";
 
             if (changeType == "Price")
@@ -281,16 +283,24 @@ namespace TripService.Data
             }
 
             // Update changes
-            CreateChangesEvent(new ChangesEvent{
+            ChangesEvent changes = new ChangesEvent{
                 Id = Guid.NewGuid(),
                 OfferId = selectedTrip.Id,
                 ChangeType = changeType,
                 ChangeValue = changeValue,
-            });
+            };
+            CreateChangesEvent(changes);
+
+            ChangesEventDto dto = new ChangesEventDto{
+                CorrelationId = Guid.NewGuid(),
+                OfferId = selectedTrip.Id,
+                ChangeType = changeType,
+                ChangeValue = changeValue,
+            };
 
             _context.SaveChanges();
 
-            return selectedTrip;
+            return dto;
         }
     }
 }

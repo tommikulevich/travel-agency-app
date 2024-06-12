@@ -16,7 +16,7 @@ namespace ApiGateway.Consumers
 
         public async Task Consume(ConsumeContext<NewPreferenceEvent> context)
         {
-            Console.WriteLine("Reservation status changed");
+            Console.WriteLine("Statistic changed");
             
             Guid? CorrelationId = context.Message.CorrelationId;
             var newPreference = context.Message.newPreference;
