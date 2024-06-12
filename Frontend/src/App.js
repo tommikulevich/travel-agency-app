@@ -14,7 +14,6 @@ import TripList from './components/TripList';
 export const AppContext = createContext();
 
 const App = () => {
-  const [reservedOffer, setReservedOffer] = useState(null);
   const [offers, setOffers] = useState([]);
   const [clientId, setClientId] = useState(null);
 
@@ -24,11 +23,12 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const result = await axios(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetAllTrips`);
-      setOffers(result.data);
+      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
+      setOffers(offersWithStatus);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-  }, [reactAppHost, reactAppPort]); 
+  }, [reactAppHost, reactAppPort]);
 
   useEffect(() => {
     fetchData();
@@ -39,10 +39,25 @@ const App = () => {
       const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetTripsByPreferences`, {
         params: searchParams,
       });
-      setOffers(result.data);
+      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
+      setOffers(offersWithStatus);
     } catch (error) {
       console.error('Error searching offers:', error);
     }
+  };
+
+  const parseOfferId = (message) => {
+    const normalizedMessage = message.replace(/\s/g, '').replace('wasjustreserved', '');
+    const offerIdPattern = /^[a-f0-9-]{36}$/;
+    return offerIdPattern.test(normalizedMessage) ? normalizedMessage : null;
+  };
+
+  const updateOfferStatus = (offerId) => {
+    setOffers(prevOffers =>
+      prevOffers.map(offer =>
+        offer.id === offerId ? { ...offer, isReserved: true } : offer
+      )
+    );
   };
 
   // SignalR connection setup
@@ -52,51 +67,30 @@ const App = () => {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    connection.on("ReceiveMessage", (offerId) => {
-      console.log("Received offer ID:", offerId);
-      setReservedOffer(offerId);
+    connection.on("ReceiveMessage", (message) => {
+      console.log("Received message:", message);
+      const offerId = parseOfferId(message);
+      if (offerId) {
+        updateOfferStatus(offerId);
+      }
     });
 
-    connection.on("OfferReserved", (offerId) => {
-      console.log("Offer reserved:", offerId);
-      setReservedOffer(offerId);
-    });
-
-    connection.start()
-      .then(() => console.log("SignalR Connected"))
-      .catch((err) => console.error("SignalR Connection Error:", err));
-
-    // Clean up the connection on component unmount
-    return () => {
-      connection.stop().then(() => console.log("SignalR Disconnected"));
-    };
-  }, []);
-
-  useEffect(() => {
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl(`http://${process.env.REACT_APP_HOST || 'localhost'}:${process.env.REACT_APP_PORT || 3000}/notificationHub`)
-      .configureLogging(signalR.LogLevel.Information)
-      .build();
-
-    connection.on("ReceiveMessage", (offerId) => {
-      console.log("Received offer ID:", offerId);
-      setReservedOffer(offerId);
-    });
-
-    connection.on("OfferReserved", (offerId) => {
-      console.log("Offer reserved:", offerId);
-      setReservedOffer(offerId);
+    connection.on("OfferReserved", (message) => {
+      console.log("Offer reserved:", message);
+      const offerId = parseOfferId(message);
+      if (offerId) {
+        updateOfferStatus(offerId);
+      }
     });
 
     connection.start()
       .then(() => console.log("SignalR Connected"))
       .catch((err) => console.error("SignalR Connection Error:", err));
 
-    // Clean up the connection on component unmount
     return () => {
       connection.stop().then(() => console.log("SignalR Disconnected"));
     };
-  }, []);
+  }, [reactAppHost, reactAppPort]);
 
   return (
     <AppContext.Provider value={{ clientId, setClientId }}>
@@ -108,7 +102,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-offers" element={<ReservedOffers />} />
-              <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} reservedOffer={reservedOffer} /><TripList reservedOffer={reservedOffer} /></>} />
+              <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} /><TripList /></>} />
             </Routes>
           </div>
           <footer style={{ textAlign: 'left', padding: '2px', fontSize: '8px' }}>
