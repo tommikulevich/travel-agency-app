@@ -212,5 +212,85 @@ namespace TripService.Data
             
             return query.ToList();
         }
+
+        public void CreateChangesEvent(ChangesEvent change)
+        {
+            if (change == null) 
+            {
+                throw new ArgumentNullException(nameof(change));
+            }
+            _context.ChangesEvent.Add(change);
+        }
+
+        public Trip? GetRandomTripAndGenerateChanges()
+        {
+            var specificTrips = _context.Trip.Where(
+                t => t.Status == "Dostępna" 
+                  || t.Status == "Zarezerwowana" 
+                  || t.Status == "Odwołana").ToList();
+            
+            if (specificTrips.Count == 0)
+            {
+                Console.WriteLine("There is no offers with statuses: Dostępna, Zarezerwowana, Odwołana!");
+                return null;
+            }
+
+            Random rand = new Random();
+            int index = rand.Next(specificTrips.Count);
+            var selectedTrip = specificTrips[index];
+            Console.WriteLine($"Generator selects offer: {selectedTrip.Id}");
+
+            // Decide if we are going to change price or status (price has 60% probability)
+            string changeType = rand.Next(10) < 6 ? "Price" : "Status";
+            string changeValue = "-";
+
+            if (changeType == "Price")
+            {
+                double oldPrice = selectedTrip.Price;
+                double maxIncrease = oldPrice;
+                double newPrice = oldPrice + (int)(rand.NextDouble() * maxIncrease);
+
+                Console.WriteLine($"Old price: {oldPrice}. Generated price: {newPrice}");
+                selectedTrip.Price = newPrice;
+                changeValue = newPrice.ToString();
+            }
+            else
+            {
+                string newStatus = "-";
+                string oldStatus = selectedTrip.Status;
+                Guid? clientId = selectedTrip.ClientId;
+                switch (oldStatus)
+                {
+                    case "Dostępna":
+                        newStatus = "Odwołana";
+                        break;
+                    case "Odwołana":
+                        newStatus = "Dostępna";
+                        break;
+                    case "Zarezerwowana":
+                        // TODO: unreserve hotel and flight
+                        newStatus = "Dostępna";
+                        clientId = null;
+
+                        // TODO: (optional) add possible changing to "Odwołana"
+                        break;
+                }
+                Console.WriteLine($"Old status: {oldStatus}. Generated status: {newStatus}");
+                ChangeReservationStatus(selectedTrip.Id, newStatus, clientId);
+                changeValue = newStatus;
+            }
+
+            // Update changes
+            CreateChangesEvent(new ChangesEvent{
+                Id = Guid.NewGuid(),
+                OfferId = selectedTrip.Id,
+                ChangeType = changeType,
+                ChangeValue = changeValue,
+            });
+
+            _context.SaveChanges();
+
+            return selectedTrip;
+        }
     }
 }

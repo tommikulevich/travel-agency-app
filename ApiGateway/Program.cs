@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.OpenApi.Models;
 using System;
 using ApiGateway.Consumers;
+using ApiGateway.Singletons;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(dbConn));
 builder.Services.AddScoped<IUserRepo, UserRepo>();
+builder.Services.AddSingleton<GenerationState>();
 
 builder.Services.AddMassTransit(cfg =>
 {

@@ -11,5 +11,6 @@ namespace TripService.Data
         }
 
         public DbSet<Trip> Trip { get; set; }
+        public DbSet<ChangesEvent> ChangesEvent { get; set; }
     }
 }

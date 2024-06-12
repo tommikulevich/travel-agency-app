@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Trip.Dtos;
 using Shared.Trip.Events;
+using ApiGateway.Singletons;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace ApiGateway.Controllers
         private readonly IRequestClient<CheckReservationStatusEvent> _checkReservationStatusEvent;
         private readonly IRequestClient<GetAllPreferencesEvent> _getAllPreferences;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly GenerationState _generationState;
+        private readonly IPublishEndpoint _publishEndpoint;
 
         public TripController(IRequestClient<GetTripsByUserIdEvent> getTripsClient, 
                               IRequestClient<GetAllTripsEvent> getAllTrips, 
@@ -27,7 +30,9 @@ namespace ApiGateway.Controllers
                               IRequestClient<ReservationTripEvent> reservationTripEvent,
                               IRequestClient<CheckReservationStatusEvent> checkReservationStatusEvent,
                               IRequestClient<GetAllPreferencesEvent> getAllPreferences,
-                              IHubContext<NotificationHub> hubContext)
+                              IHubContext<NotificationHub> hubContext,
+                              GenerationState generationState,
+                              IPublishEndpoint publishEndpoint)
         {
             _getTripsClient = getTripsClient;
             _getAllTrips = getAllTrips;
@@ -36,6 +41,10 @@ namespace ApiGateway.Controllers
             _checkReservationStatusEvent = checkReservationStatusEvent;
             _getAllPreferences = getAllPreferences;
             _hubContext = hubContext;
+            _generationState = generationState;
+            _publishEndpoint = publishEndpoint;
+
+            _generationState.SetPublishEndpoint(_publishEndpoint);
         }
 
         [HttpGet("GetTripsByUserId")]
@@ -173,6 +182,20 @@ namespace ApiGateway.Controllers
             // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
 
             return Preferences;
+        }
+
+        [HttpPost("StartGeneration")]
+        public IActionResult StartGeneration()
+        {
+            _generationState.Start();
+            return Ok("Generation started");
+        }
+
+        [HttpPost("StopGeneration")]
+        public IActionResult StopGeneration()
+        {
+            _generationState.Stop();
+            return Ok("Generation stopped");
         }
     }
 }
