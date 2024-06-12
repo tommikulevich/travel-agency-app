@@ -91,7 +91,7 @@ function Offers({ offers = [] }) {
                 <button onClick={toggleShowAllFeatures}>
                   {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
                 </button>
-                {offer.status !== "Zarezerwowana" && clientId && (
+                {offer.status == "Dostępna" && clientId && (
                   <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
                 )}
               </>

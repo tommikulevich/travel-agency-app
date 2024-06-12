@@ -12,6 +12,10 @@ const Header = ({ onTitleClick }) => {
     navigate('/'); 
   };
 
+  const handleStatsClick = () => {
+    navigate('/stats');
+  };
+
   return (
     <header>
       <Link to="/" className="site-title" onClick={onTitleClick}>
@@ -20,18 +24,24 @@ const Header = ({ onTitleClick }) => {
       <span className="separator"></span>
       <div>
         {clientId ? (
-          <button onClick={handleLogout} className="button-logout">
-            Wyloguj
-          </button>
+          <>
+            <button onClick={handleLogout} className="button-logout">
+              Wyloguj
+            </button>
+            <span className="separator"></span>
+            <Link to="/user-offers" className="button">
+              Podgląd Twoich ofert
+            </Link>
+            <span className="separator"></span>
+            {clientId === 'd8313a02-a0fd-4a13-8e3a-c22393c388a7' && (
+              <button onClick={handleStatsClick} className="button">
+                Statystyki dla nerdów
+              </button>
+            )}
+          </>
         ) : (
           <Link to="/login" className="button">
             Zaloguj
-          </Link>
-        )}
-        <span className="separator"></span>
-        {clientId && (
-          <Link to="/user-offers" className="button">
-            Podgląd Twoich ofert
           </Link>
         )}
       </div>

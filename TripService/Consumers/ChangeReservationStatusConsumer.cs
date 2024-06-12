@@ -50,7 +50,8 @@ namespace TripService.Consumers
             {
                 new_top_destination = _tripRepo.GetMostPopularReservedDestination();
                 new_top_hotel = _tripRepo.GetMostPopularReservedHotel();
-
+                new_top_room = _tripRepo.GetMostPopularReservedRoom();
+                new_top_transport = _tripRepo.GetMostPopularReservedTransport();
                 // Destination preference changed
                 if (new_top_destination != previous_top_destination)
                 {

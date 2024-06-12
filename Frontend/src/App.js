@@ -8,6 +8,7 @@ import Offers from './components/Offers';
 import ReservedOffers from './components/ReservedOffers';
 import Login from './components/Login';
 import Register from './components/Register';
+import Stats from './components/Stats'; // Import the new Stats component
 import './App.css';
 import TripList from './components/TripList';
 
@@ -22,11 +23,11 @@ const App = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const result = await axios(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetAllTrips`);
+      const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetAllTrips`);
       const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
       setOffers(offersWithStatus);
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Error fetching data:', error.response || error.message);
     }
   }, [reactAppHost, reactAppPort]);
 
@@ -42,7 +43,7 @@ const App = () => {
       const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
       setOffers(offersWithStatus);
     } catch (error) {
-      console.error('Error searching offers:', error);
+      console.error('Error searching offers:', error.response || error.message);
     }
   };
 
@@ -102,6 +103,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-offers" element={<ReservedOffers />} />
+              <Route path="/stats" element={<Stats />} /> 
               <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} /><TripList /></>} />
             </Routes>
           </div>

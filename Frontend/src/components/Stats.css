@@ -1,0 +1,23 @@
+.stats-page {
+  padding: 20px;
+  background-size: cover;
+  background-position: center;
+}
+
+.stats-container {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.stats-container p {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+.stats-container p strong {
+  display: inline-block;
+  width: 150px;
+}
