@@ -66,6 +66,10 @@ function Offers({ offers = [] }) {
     }
   }, [memoizedOffers, offerList]);
 
+  useEffect(() => {
+    console.log("Offers component re-rendered with offerList:", offerList);
+  }, [offerList]);
+
   return (
     <div className="offers" style={{ maxHeight: '700px', overflowY: 'scroll' }}>
       {offerList.map((offer, index) => {
@@ -74,6 +78,8 @@ function Offers({ offers = [] }) {
 
         const isReserved = offer.isReserved;
         const isChanged = offer.isChanged;
+
+        console.log(`Rendering offer ${offer.id}, status: ${offer.status}, isReserved: ${isReserved}, isChanged: ${isChanged}`);
 
         return (
           <div key={index} className={`offer-card ${isReserved ? 'reserved' : ''} ${isChanged ? 'changed' : ''}`}>
@@ -108,7 +114,9 @@ function Offers({ offers = [] }) {
             )}
             <p>Status: {offer.status}</p>
             {isReserved && <div className="reserved-message">Ta oferta właśnie została zarezerwowana</div>}
-            {isChanged && <div className="changed-message">Ta oferta została zmieniona</div>}
+            {isChanged && <div className="changed-message">
+                Ta oferta została zmieniona - Typ zmiany: {offer.changedType === "Price" ? "Cena" : offer.changedType}, Nowa wartość: {offer.changedValue}
+              </div>}
           </div>
         );
       })}

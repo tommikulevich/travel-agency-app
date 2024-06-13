@@ -58,7 +58,13 @@ const App = () => {
   const updateOfferInformation = (offerId, changedType, changedValue) => {
     setOffers(prevOffers =>
       prevOffers.map(offer =>
-        offer.id === offerId ? { ...offer, [changedType]: changedValue, isChanged: true } : offer
+        offer.id === offerId ? { 
+          ...offer, 
+          [changedType === "Price" ? "price" : changedType.toLowerCase()]: changedValue, 
+          isChanged: true,
+          changedType,
+          changedValue
+        } : offer
       )
     );
   };
@@ -87,6 +93,9 @@ const App = () => {
         const [rawOfferId, changedType, changedValue, previousValue] = parts;
         const offerId = parseOfferId(rawOfferId);
         if (offerId) {
+          console.log("ID of changed offer:", offerId);
+          console.log("changedType", changedType);
+          console.log("changedValue", changedValue);
           updateOfferInformation(offerId, changedType, changedValue);
         }
       } else {
