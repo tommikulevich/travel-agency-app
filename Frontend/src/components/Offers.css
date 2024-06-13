@@ -17,3 +17,11 @@
   top: 10px;
   right: 10px;
 }
+
+.changed {
+  background-color: rgb(10, 67, 141);
+}
+
+.offer-card.changed {
+  background-color: rgb(10, 67, 141);
+}

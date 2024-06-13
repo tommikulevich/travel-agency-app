@@ -26,6 +26,7 @@ namespace ApiGateway.Consumers
             var previousValue = context.Message.PreviousValue;
 
             await _hubContext.Clients.All.SendAsync("Change", $"{OfferId};{changedType};{changedValue};{previousValue}");
+            await _hubContext.Clients.All.SendAsync("ChangedOffer", $"{OfferId};{changedType};{changedValue};{previousValue}");
             
             await Task.Yield(); 
 
