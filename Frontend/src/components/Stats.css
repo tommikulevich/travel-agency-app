@@ -21,3 +21,49 @@
   display: inline-block;
   width: 150px;
 }
+
+.generation-control {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.generation-control .button {
+  margin: 10px;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.generation-control p {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+
+.last-reserved-offers-container {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.last-reserved-offers {
+  max-height: 500px; /* Increased height */
+  overflow-y: scroll;
+  margin-top: 10px;
+}
+
+.last-reserved-offers ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.last-reserved-offers li {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.last-reserved-offers li:last-child {
+  border-bottom: none;
+}

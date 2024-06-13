@@ -8,7 +8,7 @@ import Offers from './components/Offers';
 import ReservedOffers from './components/ReservedOffers';
 import Login from './components/Login';
 import Register from './components/Register';
-import Stats from './components/Stats'; // Import the new Stats component
+import Stats from './components/Stats';
 import './App.css';
 import TripList from './components/TripList';
 
@@ -24,7 +24,7 @@ const App = () => {
   const fetchData = useCallback(async () => {
     try {
       const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetAllTrips`);
-      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
+      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false, isChanged: false }));
       setOffers(offersWithStatus);
     } catch (error) {
       console.error('Error fetching data:', error.response || error.message);
@@ -40,17 +40,11 @@ const App = () => {
       const result = await axios.get(`http://${reactAppHost}:${reactAppPort}/api/Trip/GetTripsByPreferences`, {
         params: searchParams,
       });
-      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false }));
+      const offersWithStatus = result.data.map(offer => ({ ...offer, isReserved: false, isChanged: false }));
       setOffers(offersWithStatus);
     } catch (error) {
       console.error('Error searching offers:', error.response || error.message);
     }
-  };
-
-  const parseOfferId = (message) => {
-    const normalizedMessage = message.replace(/\s/g, '').replace('wasjustreserved', '');
-    const offerIdPattern = /^[a-f0-9-]{36}$/;
-    return offerIdPattern.test(normalizedMessage) ? normalizedMessage : null;
   };
 
   const updateOfferStatus = (offerId) => {
@@ -61,6 +55,20 @@ const App = () => {
     );
   };
 
+  const updateOfferInformation = (offerId, changedType, changedValue) => {
+    setOffers(prevOffers =>
+      prevOffers.map(offer =>
+        offer.id === offerId ? { ...offer, [changedType]: changedValue, isChanged: true } : offer
+      )
+    );
+  };
+
+  const parseOfferId = (message) => {
+    const normalizedMessage = message.replace(/\s/g, '').replace('wasjustreserved', '');
+    const offerIdPattern = /^[a-f0-9-]{36}$/;
+    return offerIdPattern.test(normalizedMessage) ? normalizedMessage : null;
+  };
+
   // SignalR connection setup
   useEffect(() => {
     const connection = new signalR.HubConnectionBuilder()
@@ -68,18 +76,30 @@ const App = () => {
       .configureLogging(signalR.LogLevel.Information)
       .build();
 
-    connection.on("ReceiveMessage", (message) => {
-      console.log("Received message:", message);
-      const offerId = parseOfferId(message);
-      if (offerId) {
-        updateOfferStatus(offerId);
+    // connection.on("ReceiveMessage", (message) => {
+    //   console.log("Received message:", message);
+    // });
+
+    connection.on("ChangedOffer", (message) => {
+      console.log("Offer changed:", message);
+      const parts = message.split(';');
+      if (parts.length === 4) {
+        const [rawOfferId, changedType, changedValue, previousValue] = parts;
+        const offerId = parseOfferId(rawOfferId);
+        if (offerId) {
+          updateOfferInformation(offerId, changedType, changedValue);
+        }
+      } else {
+        console.error('Unexpected message format:', message);
       }
     });
 
-    connection.on("OfferReserved", (message) => {
-      console.log("Offer reserved:", message);
+    connection.on("ReceiveMessage", (message) => {
+      console.log("ReceiveMessage:", message);
       const offerId = parseOfferId(message);
+      console.log("ID:", offerId);
       if (offerId) {
+        console.log("PlainID:", offerId);
         updateOfferStatus(offerId);
       }
     });
@@ -103,7 +123,7 @@ const App = () => {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/user-offers" element={<ReservedOffers />} />
-              <Route path="/stats" element={<Stats />} /> 
+              <Route path="/stats" element={<Stats />} />
               <Route path="/" element={<><SearchForm onSearch={handleSearch} /><Offers offers={offers} /><TripList /></>} />
             </Routes>
           </div>

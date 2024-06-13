@@ -1,18 +1,24 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useMemo } from 'react';
 import { AppContext } from '../App';
 import axios from 'axios';
 import './Offers.css';
 import { useNavigate } from 'react-router-dom';
+import isEqual from 'lodash/isEqual'; // Import lodash for deep comparison
 
 function Offers({ offers = [] }) {
-  const [showAllFeatures, setShowAllFeatures] = useState(false);
+  const [offerList, setOfferList] = useState(offers);
   const { clientId } = useContext(AppContext);
   const navigate = useNavigate();
-  const toggleShowAllFeatures = () => {
-    setShowAllFeatures(!showAllFeatures);
-  };
   const reactAppHost = process.env.REACT_APP_HOST || 'localhost';
   const reactAppPort = process.env.REACT_APP_PORT || 3000;
+
+  const toggleShowAllFeatures = (offerId) => {
+    setOfferList(prevOffers =>
+      prevOffers.map(offer =>
+        offer.id === offerId ? { ...offer, showAllFeatures: !offer.showAllFeatures } : offer
+      )
+    );
+  };
 
   const handleReserve = async (offer) => {
     const reservationDto = {
@@ -51,22 +57,26 @@ function Offers({ offers = [] }) {
     }
   };
 
+  // Memoize the offers to avoid unnecessary updates
+  const memoizedOffers = useMemo(() => offers, [offers]);
+
   useEffect(() => {
-    console.log("Offers component re-rendered with offers:", offers);
-  }, [offers]);
+    if (!isEqual(offerList, memoizedOffers)) {
+      setOfferList(memoizedOffers);
+    }
+  }, [memoizedOffers, offerList]);
 
   return (
     <div className="offers" style={{ maxHeight: '700px', overflowY: 'scroll' }}>
-      {offers.map((offer, index) => {
+      {offerList.map((offer, index) => {
         const features = offer.features.split('|');
-        const visibleFeatures = showAllFeatures ? features : features.slice(0, 1);
+        const visibleFeatures = offer.showAllFeatures ? features : features.slice(0, 1);
 
         const isReserved = offer.isReserved;
-        console.log(`Rendering offer ${offer.id}, isReserved: ${isReserved}`);
-        console.log(`Type of offer.id: ${typeof offer.id}`);
+        const isChanged = offer.isChanged;
 
         return (
-          <div key={index} className={`offer-card ${isReserved ? 'reserved' : ''}`}>
+          <div key={index} className={`offer-card ${isReserved ? 'reserved' : ''} ${isChanged ? 'changed' : ''}`}>
             <h2>{offer.name}</h2>
             <p>Kraj: {offer.country}</p>
             <p>Miasto: {offer.city}</p>
@@ -88,16 +98,17 @@ function Offers({ offers = [] }) {
             </div>
             {!isReserved && (
               <>
-                <button onClick={toggleShowAllFeatures}>
-                  {showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
+                <button onClick={() => toggleShowAllFeatures(offer.id)}>
+                  {offer.showAllFeatures ? 'Pokaż mniej' : 'Pokaż więcej'}
                 </button>
-                {offer.status == "Dostępna" && clientId && (
+                {offer.status === "Dostępna" && clientId && (
                   <button onClick={() => handleReserve(offer)}>Rezerwuj</button>
                 )}
               </>
             )}
             <p>Status: {offer.status}</p>
             {isReserved && <div className="reserved-message">Ta oferta właśnie została zarezerwowana</div>}
+            {isChanged && <div className="changed-message">Ta oferta została zmieniona</div>}
           </div>
         );
       })}
