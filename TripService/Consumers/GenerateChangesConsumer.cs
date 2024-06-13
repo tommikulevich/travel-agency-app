@@ -52,8 +52,12 @@ namespace TripService.Consumers
                         });
                     }
                 }
-                Trip changedTripInRepo2 = _tripRepo.GetTripByGuid(changedTrip.OfferId);
-                _tripRepo.ChangeReservationStatus(changedTripInRepo2.Id, changedTrip.ChangeValue, null);
+                if (changedTrip.ChangeType == "Status")
+                {
+                    Trip changedTripInRepo2 = _tripRepo.GetTripByGuid(changedTrip.OfferId);
+                    _tripRepo.ChangeReservationStatus(changedTripInRepo2.Id, changedTrip.ChangeValue, null);
+                }
+
             } 
             else 
             {
