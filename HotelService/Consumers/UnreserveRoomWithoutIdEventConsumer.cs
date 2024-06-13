@@ -49,11 +49,15 @@ namespace HotelService.Consumers
             {
                 _context.SaveChanges();
                 Console.WriteLine($"Unreservation successful for Client ID: {context.Message.ClientId}");
-                
-                await context.RespondAsync(new RoomsAvailabilityAfterUnreservationEvent {
+                await context.Publish(new RoomsAvailabilityAfterUnreservationEvent {
                     Id = Guid.NewGuid(), 
                     CorrelationId = context.Message.CorrelationId
                 });
+                
+                // await context.RespondAsync(new RoomsAvailabilityAfterUnreservationEvent {
+                //     Id = Guid.NewGuid(), 
+                //     CorrelationId = context.Message.CorrelationId
+                // });
             } 
             catch (Exception e) 
             {

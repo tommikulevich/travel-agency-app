@@ -32,7 +32,7 @@ namespace TripService.Consumers
 
                     Console.WriteLine("Unreserving room");
                     await context.Publish(new UnreserveRoomWithoutIdEvent{
-                        CorrelationId = corrId,
+                        CorrelationId = changedTripInRepo.Id,
                         ClientId = changedTripInRepo.ClientId ?? Guid.Empty,
                         ArrivalDate = changedTripInRepo.DepartureDate,
                         ReturnDate = changedTripInRepo.ReturnDate,
@@ -48,6 +48,8 @@ namespace TripService.Consumers
                         FlightId = changedTripInRepo.FlightId,
                         Seats = (-1) * (changedTripInRepo.NumOfAdults + changedTripInRepo.NumOfKidsTo18 + changedTripInRepo.NumOfKidsTo10)
                     });
+
+                    _tripRepo.ChangeReservationStatus(changedTripInRepo.Id, changedTrip.ChangeValue, null);
                 }
             } 
             else 
