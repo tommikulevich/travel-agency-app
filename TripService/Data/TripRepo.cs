@@ -245,6 +245,7 @@ namespace TripService.Data
             // string changeType = rand.Next(10) < 6 ? "Price" : "Status";
             string changeType = "Status";
             string changeValue = "-";
+            string previousValue = "-";
 
             if (changeType == "Price")
             {
@@ -255,6 +256,7 @@ namespace TripService.Data
                 Console.WriteLine($"Old price: {oldPrice}. Generated price: {newPrice}");
                 selectedTrip.Price = newPrice;
                 changeValue = newPrice.ToString();
+                previousValue = oldPrice.ToString();
             }
             else
             {
@@ -280,6 +282,7 @@ namespace TripService.Data
                 Console.WriteLine($"Old status: {oldStatus}. Generated status: {newStatus}");
                 ChangeReservationStatus(selectedTrip.Id, newStatus, clientId);
                 changeValue = newStatus;
+                previousValue = oldStatus;
             }
 
             // Update changes
@@ -296,6 +299,7 @@ namespace TripService.Data
                 OfferId = selectedTrip.Id,
                 ChangeType = changeType,
                 ChangeValue = changeValue,
+                PreviousValue = previousValue
             };
 
             _context.SaveChanges();
