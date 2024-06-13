@@ -1,3 +1,4 @@
+using Shared.Trip.Dtos;
 using TripService.Models;
 
 namespace TripService.Data
@@ -22,6 +23,6 @@ namespace TripService.Data
             DateTime ReturnDate, string RoomType);
         public IEnumerable<Trip> GetTripsByFlightId(Guid? flightId);
         public void CreateChangesEvent(ChangesEvent change);
-        public Trip? GetRandomTripAndGenerateChanges();
+        public ChangesEventDto GetRandomTripAndGenerateChanges();
     }
 }

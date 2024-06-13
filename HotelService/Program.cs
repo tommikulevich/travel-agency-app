@@ -27,6 +27,11 @@ builder.Services.AddMassTransit(x => {
         context.UseMessageRetry(r => r.Interval(3, 1000));
         context.UseInMemoryOutbox();
     });
+    x.AddConsumer<UnreserveRoomWithoutIdEventConsumer>(context =>
+    {
+        context.UseMessageRetry(r => r.Interval(3, 1000));
+        context.UseInMemoryOutbox();
+    });
     x.AddDelayedMessageScheduler();
     x.UsingRabbitMq((context, rabbitCfg) =>
     {

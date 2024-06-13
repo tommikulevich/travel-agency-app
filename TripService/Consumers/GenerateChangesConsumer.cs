@@ -1,6 +1,10 @@
 using MassTransit;
 using TripService.Data;
 using Shared.Trip.Events;
+using Shared.Trip.Dtos;
+using TripService.Models;
+using Shared.Hotel.Events;
+using Shared.Flight.Events;
 
 namespace TripService.Consumers
 {
@@ -20,6 +24,33 @@ namespace TripService.Consumers
             if (changedTrip != null) 
             {
                 Console.WriteLine("Generation successful!");
+                await context.Publish(changedTrip);
+                if (changedTrip.PreviousValue == "Zarezerwowana")
+                {
+                    Trip changedTripInRepo = _tripRepo.GetTripByGuid(changedTrip.OfferId);
+                    Guid corrId = Guid.NewGuid();
+
+                    Console.WriteLine("Unreserving room");
+                    await context.Publish(new UnreserveRoomWithoutIdEvent{
+                        CorrelationId = changedTripInRepo.Id,
+                        ClientId = changedTripInRepo.ClientId ?? Guid.Empty,
+                        ArrivalDate = changedTripInRepo.DepartureDate,
+                        ReturnDate = changedTripInRepo.ReturnDate,
+                        HotelId = changedTripInRepo.HotelId,
+                        NumOfPeople = changedTripInRepo.NumOfAdults + changedTripInRepo.NumOfKidsTo18 + changedTripInRepo.NumOfKidsTo10 + changedTripInRepo.NumOfKidsTo3,
+                        RoomType = changedTripInRepo.RoomType,
+                        Features = changedTripInRepo.Features,
+                    });
+                    
+                    Console.WriteLine("Unreserving flight");
+                    await context.Publish(new ReserveSeatsEvent{
+                        CorrelationId = corrId,
+                        FlightId = changedTripInRepo.FlightId,
+                        Seats = (-1) * (changedTripInRepo.NumOfAdults + changedTripInRepo.NumOfKidsTo18 + changedTripInRepo.NumOfKidsTo10)
+                    });
+
+                    _tripRepo.ChangeReservationStatus(changedTripInRepo.Id, changedTrip.ChangeValue, null);
+                }
             } 
             else 
             {

@@ -28,7 +28,7 @@ namespace TripService.Consumers
 
             foreach(var Trip in Trips)
             {
-                _tripRepo.ChangeReservationStatus(Trip.Id, "Lack of rooms", null);
+                _tripRepo.ChangeReservationStatus(Trip.Id, "Brak pokoi", null);
             }
 
             await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning

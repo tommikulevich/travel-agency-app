@@ -1,3 +1,4 @@
+using Shared.Trip.Dtos;
 using TripService.Models;
 
 namespace TripService.Data
@@ -222,12 +223,23 @@ namespace TripService.Data
             _context.ChangesEvent.Add(change);
         }
 
-        public Trip? GetRandomTripAndGenerateChanges()
+        public ChangesEventDto GetRandomTripAndGenerateChanges()
         {
-            var specificTrips = _context.Trip.Where(
+            Random rand = new Random();
+            List<Trip> specificTrips;
+            string changeType = rand.Next(10) < 6 ? "Price" : "Status";
+            if (changeType == "Price")
+            {
+                specificTrips = _context.Trip.Where(
+                t => t.Status == "Dostępna").ToList();
+            }
+            else
+            {
+                specificTrips = _context.Trip.Where(
                 t => t.Status == "Dostępna" 
                   || t.Status == "Zarezerwowana" 
                   || t.Status == "Odwołana").ToList();
+            }
             
             if (specificTrips.Count == 0)
             {
@@ -235,14 +247,14 @@ namespace TripService.Data
                 return null;
             }
 
-            Random rand = new Random();
+            
             int index = rand.Next(specificTrips.Count);
             var selectedTrip = specificTrips[index];
             Console.WriteLine($"Generator selects offer: {selectedTrip.Id}");
 
             // Decide if we are going to change price or status (price has 60% probability)
-            string changeType = rand.Next(10) < 6 ? "Price" : "Status";
             string changeValue = "-";
+            string previousValue = "-";
 
             if (changeType == "Price")
             {
@@ -253,6 +265,7 @@ namespace TripService.Data
                 Console.WriteLine($"Old price: {oldPrice}. Generated price: {newPrice}");
                 selectedTrip.Price = newPrice;
                 changeValue = newPrice.ToString();
+                previousValue = oldPrice.ToString();
             }
             else
             {
@@ -276,21 +289,30 @@ namespace TripService.Data
                         break;
                 }
                 Console.WriteLine($"Old status: {oldStatus}. Generated status: {newStatus}");
-                ChangeReservationStatus(selectedTrip.Id, newStatus, clientId);
                 changeValue = newStatus;
+                previousValue = oldStatus;
             }
 
             // Update changes
-            CreateChangesEvent(new ChangesEvent{
+            ChangesEvent changes = new ChangesEvent{
                 Id = Guid.NewGuid(),
                 OfferId = selectedTrip.Id,
                 ChangeType = changeType,
                 ChangeValue = changeValue,
-            });
+            };
+            // CreateChangesEvent(changes);
+
+            ChangesEventDto dto = new ChangesEventDto{
+                CorrelationId = Guid.NewGuid(),
+                OfferId = selectedTrip.Id,
+                ChangeType = changeType,
+                ChangeValue = changeValue,
+                PreviousValue = previousValue
+            };
 
             _context.SaveChanges();
 
-            return selectedTrip;
+            return dto;
         }
     }
 }
