@@ -42,15 +42,18 @@ namespace TripService.Consumers
                         Features = changedTripInRepo.Features,
                     });
                     
-                    Console.WriteLine("Unreserving flight");
-                    await context.Publish(new ReserveSeatsEvent{
-                        CorrelationId = corrId,
-                        FlightId = changedTripInRepo.FlightId,
-                        Seats = (-1) * (changedTripInRepo.NumOfAdults + changedTripInRepo.NumOfKidsTo18 + changedTripInRepo.NumOfKidsTo10)
-                    });
-
-                    _tripRepo.ChangeReservationStatus(changedTripInRepo.Id, changedTrip.ChangeValue, null);
+                    if (changedTripInRepo.TransportType == "Samolot")
+                    {
+                        Console.WriteLine("Unreserving flight");
+                        await context.Publish(new ReserveSeatsEvent{
+                            CorrelationId = corrId,
+                            FlightId = changedTripInRepo.FlightId,
+                            Seats = (-1) * (changedTripInRepo.NumOfAdults + changedTripInRepo.NumOfKidsTo18 + changedTripInRepo.NumOfKidsTo10)
+                        });
+                    }
                 }
+                Trip changedTripInRepo2 = _tripRepo.GetTripByGuid(changedTrip.OfferId);
+                _tripRepo.ChangeReservationStatus(changedTripInRepo2.Id, changedTrip.ChangeValue, null);
             } 
             else 
             {
