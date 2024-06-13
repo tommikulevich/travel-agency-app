@@ -18,7 +18,7 @@ function Login() {
       const response = await axios.post(`http://${reactAppHost}:${reactAppPort}/api/Login/Auth?UserName=${username}&Password=${password}`);
       console.log(response.data);
 
-      if (response.data.userId === 0) {
+      if (response.data.userId == 0) {
         alert("Zły użytkownik lub hasło");
         navigate('/');
       } else {
