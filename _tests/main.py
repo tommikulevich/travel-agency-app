@@ -5,7 +5,7 @@ from selenium.common.exceptions import NoAlertPresentException
 
 def test_login():
     driver = webdriver.Chrome()
-    driver.get("http://localhost:3000")
+    driver.get("http://localhost:18772")
     time.sleep(3)
     
     login_page_button = driver.find_element("xpath","""//*[@id="root"]/div/header/div/a[1]""")
