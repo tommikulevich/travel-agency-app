@@ -1,6 +1,6 @@
 # 🧭 Travel Agency App
 
-> ☣ **Warning:** The project is still in development (as of 05.2024), so some information (such as database entities) may be slightly outdated.
+> ☣ **Warning:** This project was created during studies for educational purposes only. It may contain non-optimal solutions.
 
 ### 📑 About
 
