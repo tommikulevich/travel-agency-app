@@ -29,13 +29,15 @@ namespace HotelService.Consumers
                 Console.WriteLine("UWAGA: niejednoznaczny wybór pokoi do cofnięcia rezerwacji!");
             }
 
-            Room unreservedRoom = rooms.FirstOrDefault();
+            Room? unreservedRoom = rooms.FirstOrDefault();
 
-            var roomEvents = _context.RoomEvent.Where(
-                re => re.RoomId == unreservedRoom.Id &&
-                      re.StartDate == context.Message.ArrivalDate.ToUniversalTime() &&
-                      re.EndDate == context.Message.ReturnDate.ToUniversalTime() &&
-                      re.Status == "Reserved").ToList();
+            var roomEvents = unreservedRoom?.Id != null 
+                ? _context.RoomEvent.Where(
+                    re => re.RoomId == unreservedRoom.Id &&
+                        re.StartDate == context.Message.ArrivalDate.ToUniversalTime() &&
+                        re.EndDate == context.Message.ReturnDate.ToUniversalTime() &&
+                        re.Status == "Reserved").ToList() 
+                : new List<RoomEvent>();
 
             if (!roomEvents.Any()) 
             {
@@ -53,11 +55,6 @@ namespace HotelService.Consumers
                     Id = Guid.NewGuid(), 
                     CorrelationId = context.Message.CorrelationId
                 });
-                
-                // await context.RespondAsync(new RoomsAvailabilityAfterUnreservationEvent {
-                //     Id = Guid.NewGuid(), 
-                //     CorrelationId = context.Message.CorrelationId
-                // });
             } 
             catch (Exception e) 
             {

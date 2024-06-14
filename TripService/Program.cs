@@ -4,7 +4,6 @@ using TripService.Data;
 using TripService.Consumers;
 using TripService.Saga;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 string dbConn = builder.Configuration["DATABASE_CONNECTION_STRING"] ??

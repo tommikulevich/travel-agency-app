@@ -1,11 +1,9 @@
-using MassTransit;
-using Shared.ApiGateway.Events;
 using Microsoft.AspNetCore.SignalR;
+using MassTransit;
 using Shared.Trip.Dtos;
 
 namespace ApiGateway.Consumers
 {
-
     public class ChangesEventDtoConsumer : IConsumer<ChangesEventDto>
     {
         private readonly IHubContext<NotificationHub> _hubContext;
@@ -19,7 +17,6 @@ namespace ApiGateway.Consumers
         {
             Console.WriteLine("Change in offer was generated");
             
-            Guid? CorrelationId = context.Message.CorrelationId;
             Guid OfferId = context.Message.OfferId;
             var changedType = context.Message.ChangeType;
             var changedValue = context.Message.ChangeValue;
@@ -28,11 +25,7 @@ namespace ApiGateway.Consumers
             await _hubContext.Clients.All.SendAsync("Change", $"{OfferId};{changedType};{changedValue};{previousValue}");
             await _hubContext.Clients.All.SendAsync("ChangedOffer", $"{OfferId};{changedType};{changedValue};{previousValue}");
             
-            await Task.Yield(); 
-
+            await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning
         }
-
-            // await Task.Yield();     // Ensures that method runs asynchronously and avoids the warning
     }
 }
-    

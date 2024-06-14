@@ -1,7 +1,6 @@
 using MassTransit;
 using TripService.Data;
 using Shared.Trip.Events;
-using Shared.Trip.Dtos;
 using TripService.Models;
 using Shared.Hotel.Events;
 using Shared.Flight.Events;

@@ -4,9 +4,6 @@ using Microsoft.AspNetCore.SignalR;
 using Shared.Trip.Dtos;
 using Shared.Trip.Events;
 using ApiGateway.Singletons;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace ApiGateway.Controllers
 {
@@ -59,9 +56,6 @@ namespace ApiGateway.Controllers
                 });
 
             var Trips = response.Message.Trips;
-
-            // Notify clients
-            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", $"Trips for user {clientId} have been fetched.");
 
             return Trips;
         }
@@ -134,9 +128,6 @@ namespace ApiGateway.Controllers
 
             var Trips = response.Message.Trips;
 
-            // Notify clients
-            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "All trips have been fetched.");
-
             return Trips;
         }
 
@@ -160,9 +151,6 @@ namespace ApiGateway.Controllers
 
             var Trips = response.Message.Trips;
 
-            // Notify clients
-            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
-
             return Trips;
         }
 
@@ -177,9 +165,6 @@ namespace ApiGateway.Controllers
             var response = await _getAllPreferences.GetResponse<GetAllPreferencesReplyEvent>(queryEvent);
 
             var Preferences = response.Message.Preferences;
-
-            // Notify clients
-            // await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Trips based on preferences have been fetched.");
 
             return Preferences;
         }

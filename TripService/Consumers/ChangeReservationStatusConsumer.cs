@@ -1,7 +1,6 @@
 using MassTransit;
 using TripService.Data;
 using Shared.Trip.Events;
-using MassTransit.SqlTransport.Topology;
 using Shared.ApiGateway.Events;
 
 namespace TripService.Consumers
@@ -43,7 +42,6 @@ namespace TripService.Consumers
                 previous_top_transport = _tripRepo.GetMostPopularReservedTransport();
             }
             
-            
             _tripRepo.ChangeReservationStatus(offerId, status, ClientId);
 
             if (status == "Zarezerwowana")
@@ -52,6 +50,7 @@ namespace TripService.Consumers
                 new_top_hotel = _tripRepo.GetMostPopularReservedHotel();
                 new_top_room = _tripRepo.GetMostPopularReservedRoom();
                 new_top_transport = _tripRepo.GetMostPopularReservedTransport();
+                
                 // Destination preference changed
                 if (new_top_destination != previous_top_destination)
                 {
