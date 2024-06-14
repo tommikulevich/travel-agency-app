@@ -6,7 +6,7 @@ namespace ApiGateway.Singletons
     public class GenerationState
     {
         private System.Timers.Timer _timer;
-        private IPublishEndpoint _publishEndpoint;
+        private IPublishEndpoint? _publishEndpoint;
         private readonly object _lock = new object();
         public bool IsGenerating { get; private set; }
 

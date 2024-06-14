@@ -29,6 +29,7 @@ namespace TripService.Consumers
                 roomPreference = topRoom,
                 transportPreference = topTransport
             };
+            
             await context.RespondAsync<GetAllPreferencesReplyEvent>(
                 new GetAllPreferencesReplyEvent() { 
                     CorrelationId = context.Message.CorrelationId, 

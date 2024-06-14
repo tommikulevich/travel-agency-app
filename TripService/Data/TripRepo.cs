@@ -121,7 +121,12 @@ namespace TripService.Data
 
             var mostPopularDestination = destinationCount.FirstOrDefault();
 
-            return mostPopularDestination?.Destination;
+            if(mostPopularDestination != null) 
+            {
+                 return mostPopularDestination.Destination;
+            }
+
+            return "";
         }
 
         public string GetMostPopularReservedHotel()
@@ -142,7 +147,12 @@ namespace TripService.Data
 
             var mostPopularHotel = hotelCount.FirstOrDefault();
 
-            return mostPopularHotel?.Destination;
+            if(mostPopularHotel != null) 
+            {
+                 return mostPopularHotel.Destination;
+            }
+
+            return "";
         }
 
         public string GetMostPopularReservedRoom()
@@ -163,7 +173,12 @@ namespace TripService.Data
 
             var mostPopularRoom = roomCount.FirstOrDefault();
 
-            return mostPopularRoom?.Destination;
+            if(mostPopularRoom != null) 
+            {
+                 return mostPopularRoom.Destination;
+            }
+
+            return "";
         }
 
         public string GetMostPopularReservedTransport()
@@ -183,8 +198,12 @@ namespace TripService.Data
                 .ToList();
 
             var mostPopularTransport = transportCount.FirstOrDefault();
+            if(mostPopularTransport != null) 
+            {
+                 return mostPopularTransport.Destination;
+            }
 
-            return mostPopularTransport?.Destination;
+            return "";
         }
 
         public IEnumerable<Trip> GetTripsBySpecificRoomConfiguration(Guid HotelId, int NumOfAdults, 
@@ -244,7 +263,7 @@ namespace TripService.Data
             if (specificTrips.Count == 0)
             {
                 Console.WriteLine("There is no offers with statuses: Dostępna, Zarezerwowana, Odwołana!");
-                return null;
+                return new ChangesEventDto();
             }
 
             

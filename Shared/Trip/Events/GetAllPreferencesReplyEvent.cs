@@ -7,6 +7,6 @@ namespace Shared.Trip.Events
         public Guid Id { get; set; }
         public Guid CorrelationId  { get; set; }
 
-        public PreferencesDto Preferences {get;set;}
+        public PreferencesDto? Preferences {get;set;}
     }
 }

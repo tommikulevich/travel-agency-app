@@ -1,9 +1,6 @@
-using ApiGateway.Data;
-using MassTransit;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.OpenApi.Models;
-using System;
+using MassTransit;
+using ApiGateway.Data;
 using ApiGateway.Consumers;
 using ApiGateway.Singletons;
 
@@ -35,6 +32,7 @@ builder.Services.AddDbContext<UserDbContext>(options => options.UseNpgsql(dbConn
 builder.Services.AddScoped<IUserRepo, UserRepo>();
 builder.Services.AddSingleton<GenerationState>();
 
+#pragma warning disable CS0618 // Disable the obsolete warning (UseInMemoryOutbox())
 builder.Services.AddMassTransit(cfg =>
 {
     cfg.AddConsumer<NewDestinationPreferenceConsumer>(context =>
@@ -57,8 +55,8 @@ builder.Services.AddMassTransit(cfg =>
         rabbitCfg.ConfigureEndpoints(context);
     });
 });
+#pragma warning restore CS0618 // Re-enable the obsolete warning
 
-// Add SignalR
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -71,7 +69,6 @@ if (app.Environment.IsDevelopment())
 app.UseCors();
 app.MapControllers();
 
-// Map SignalR hub
 app.MapHub<NotificationHub>("/notificationHub");
 
 app.Run();

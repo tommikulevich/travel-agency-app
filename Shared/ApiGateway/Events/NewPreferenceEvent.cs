@@ -4,8 +4,8 @@ namespace Shared.ApiGateway.Events
     {
         public Guid CorrelationId { get; set; }
 
-        public string newPreference {get; set;}
+        public string newPreference {get; set;} = string.Empty;
 
-        public string typeOfPreference {get;set;}
+        public string typeOfPreference {get;set;} = string.Empty;
     }
 }
